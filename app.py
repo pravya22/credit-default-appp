@@ -5,8 +5,10 @@ import pickle
 # Load model
 model = pickle.load(open("model.pkl", "rb"))
 
+# Page config
 st.set_page_config(page_title="Credit Risk Predictor", page_icon="💳", layout="centered")
 
+# Title
 st.title("💳 Credit Default Prediction")
 st.markdown("### AI-powered risk analysis using key financial indicators")
 
@@ -38,6 +40,7 @@ with col2:
     late = st.number_input("Late Payments (90 days)", min_value=0, value=0)
     util = st.number_input("Credit Utilization", min_value=0.0, value=0.3)
 
+# Create input dataframe
 input_df = pd.DataFrame([{
     "DebtRatio": debt,
     "MonthlyIncome": income,
@@ -54,23 +57,24 @@ if st.button("🔍 Predict Risk"):
 
     st.subheader("📊 Prediction Result")
 
-    # ✅ Risk categories
-    if probability < 0.4:
+    # ✅ UPDATED THRESHOLDS (balanced)
+    if probability < 0.3:
         st.success("✅ Low Risk")
-    elif probability < 0.7:
+    elif probability < 0.6:
         st.warning("⚠️ Medium Risk")
     else:
         st.error("🚨 High Risk")
 
-    # ✅ Risk score meter (progress bar)
+    # Risk meter
     st.write("### Risk Score")
     st.progress(float(probability))
 
+    # Show probability
     st.metric("Default Probability", f"{probability:.2f}")
 
     st.write("---")
 
-    # ✅ Smart explanation
+    # EXPLANATION
     st.subheader("🧠 Why this prediction?")
 
     reasons = []
