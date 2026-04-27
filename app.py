@@ -2,13 +2,11 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-# ✅ Load model (NO models/ folder)
+# Load model
 model = pickle.load(open("model.pkl", "rb"))
 
-# Page config
 st.set_page_config(page_title="Credit Risk Predictor", page_icon="💳", layout="centered")
 
-# Title
 st.title("💳 Credit Default Prediction")
 st.markdown("### AI-powered risk analysis using key financial indicators")
 
@@ -17,17 +15,17 @@ st.write("---")
 # Sidebar
 st.sidebar.header("📌 About")
 st.sidebar.write("""
-This app predicts whether a customer is likely to default on a loan.
+This app predicts loan default risk using Machine Learning.
 
 Model: XGBoost  
-Inputs used:
+Inputs:
 - Debt Ratio  
 - Monthly Income  
 - Late Payments  
 - Credit Utilization  
 """)
 
-# ---- INPUTS ----
+# INPUTS
 st.subheader("📥 Enter Customer Details")
 
 col1, col2 = st.columns(2)
@@ -40,7 +38,6 @@ with col2:
     late = st.number_input("Late Payments (90 days)", min_value=0, value=0)
     util = st.number_input("Credit Utilization", min_value=0.0, value=0.3)
 
-# Create input dataframe (IMPORTANT: column names must match training)
 input_df = pd.DataFrame([{
     "DebtRatio": debt,
     "MonthlyIncome": income,
@@ -50,39 +47,50 @@ input_df = pd.DataFrame([{
 
 st.write("---")
 
-# ---- PREDICTION ----
+# PREDICTION
 if st.button("🔍 Predict Risk"):
 
-    prediction = model.predict(input_df)[0]
     probability = model.predict_proba(input_df)[0][1]
 
     st.subheader("📊 Prediction Result")
 
-    if prediction == 1:
-        st.error("⚠️ High Risk of Default")
-    else:
+    # ✅ Risk categories
+    if probability < 0.4:
         st.success("✅ Low Risk")
+    elif probability < 0.7:
+        st.warning("⚠️ Medium Risk")
+    else:
+        st.error("🚨 High Risk")
+
+    # ✅ Risk score meter (progress bar)
+    st.write("### Risk Score")
+    st.progress(float(probability))
 
     st.metric("Default Probability", f"{probability:.2f}")
 
     st.write("---")
 
-    # ---- SIMPLE EXPLANATION ----
-    st.subheader("🧠 Key Risk Indicators")
+    # ✅ Smart explanation
+    st.subheader("🧠 Why this prediction?")
+
+    reasons = []
 
     if debt > 0.6:
-        st.warning("High Debt Ratio increases risk")
+        reasons.append("High Debt Ratio")
 
     if late > 2:
-        st.warning("Frequent late payments detected")
+        reasons.append("Frequent Late Payments")
 
     if util > 0.7:
-        st.warning("High credit utilization")
+        reasons.append("High Credit Utilization")
 
     if income < 3000:
-        st.warning("Low income may increase risk")
+        reasons.append("Low Income")
 
-    if (debt <= 0.6 and late <= 2 and util <= 0.7 and income >= 3000):
+    if reasons:
+        for r in reasons:
+            st.warning(f"⚠️ {r}")
+    else:
         st.success("Financial profile looks stable")
 
     st.write("---")
