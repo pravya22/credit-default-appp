@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-# Load model
-model = pickle.load(open("models/model.pkl", "rb"))
+# ✅ Load model (NO models/ folder)
+model = pickle.load(open("model.pkl", "rb"))
 
 # Page config
 st.set_page_config(page_title="Credit Risk Predictor", page_icon="💳", layout="centered")
@@ -14,20 +14,20 @@ st.markdown("### AI-powered risk analysis using key financial indicators")
 
 st.write("---")
 
-# Sidebar info
+# Sidebar
 st.sidebar.header("📌 About")
 st.sidebar.write("""
 This app predicts whether a customer is likely to default on a loan.
 
 Model: XGBoost  
-Features used:
+Inputs used:
 - Debt Ratio  
 - Monthly Income  
 - Late Payments  
 - Credit Utilization  
 """)
 
-# ---- INPUT SECTION ----
+# ---- INPUTS ----
 st.subheader("📥 Enter Customer Details")
 
 col1, col2 = st.columns(2)
@@ -40,7 +40,7 @@ with col2:
     late = st.number_input("Late Payments (90 days)", min_value=0, value=0)
     util = st.number_input("Credit Utilization", min_value=0.0, value=0.3)
 
-# Create dataframe
+# Create input dataframe (IMPORTANT: column names must match training)
 input_df = pd.DataFrame([{
     "DebtRatio": debt,
     "MonthlyIncome": income,
@@ -58,13 +58,12 @@ if st.button("🔍 Predict Risk"):
 
     st.subheader("📊 Prediction Result")
 
-    # Show result
     if prediction == 1:
-        st.error(f"⚠️ High Risk of Default")
+        st.error("⚠️ High Risk of Default")
     else:
-        st.success(f"✅ Low Risk")
+        st.success("✅ Low Risk")
 
-    st.metric(label="Default Probability", value=f"{probability:.2f}")
+    st.metric("Default Probability", f"{probability:.2f}")
 
     st.write("---")
 
