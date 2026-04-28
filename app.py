@@ -11,7 +11,7 @@ st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layo
 if "user_name" not in st.session_state:
     st.session_state.user_name = None
 
-# ---------- WELCOME PAGE (DO NOT TOUCH) ----------
+# ---------- WELCOME PAGE ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -21,11 +21,11 @@ if st.session_state.user_name is None:
     }
 
     .main-container {
-        height: 100vh;
         display:flex;
         flex-direction:column;
-        justify-content:center;
         align-items:center;
+        justify-content:center;
+        padding-top:120px;
     }
 
     .glass {
@@ -56,6 +56,8 @@ if st.session_state.user_name is None:
     .stTextInput>div>div>input {
         text-align:center;
         border-radius:10px;
+        width:220px !important;
+        margin:auto;
     }
 
     .stButton>button {
@@ -77,7 +79,6 @@ if st.session_state.user_name is None:
 
     st.markdown("<div class='main-container'>", unsafe_allow_html=True)
 
-    # Title
     st.markdown("""
         <div class="glass">
             <div class="title">💳 Credit Risk Intelligence</div>
@@ -85,18 +86,12 @@ if st.session_state.user_name is None:
         </div>
     """, unsafe_allow_html=True)
 
-    # Input
-    c1, c2, c3 = st.columns([3,2,3])
-    with c2:
-        name = st.text_input("", placeholder="Enter your name")
+    name = st.text_input("", placeholder="Enter your name")
 
-    # Button
-    c4, c5, c6 = st.columns([3,1.5,3])
-    with c5:
-        if st.button("Enter"):
-            if name.strip():
-                st.session_state.user_name = name
-                st.rerun()
+    if st.button("Enter"):
+        if name.strip():
+            st.session_state.user_name = name
+            st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -125,52 +120,38 @@ if st.sidebar.button("Logout"):
     st.rerun()
 
 # ---------- HEADER ----------
-st.markdown(f"""
-<div style="display:flex; justify-content:space-between; padding:10px;
-background:rgba(255,255,255,0.05); border-radius:10px;">
-<h3>💳 Credit Risk Intelligence</h3>
-<p>👋 Hello, {st.session_state.user_name}</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(f"### 💳 Credit Risk Intelligence")
+st.markdown(f"👋 Hello, {st.session_state.user_name}")
 
-# ---------- HOME (FIXED CLEAN UI) ----------
+# ---------- HOME ----------
 if page == "🏠 Home":
 
-    st.markdown(f"""
-    <div style="
-        background: rgba(255,255,255,0.05);
-        padding:30px;
-        border-radius:15px;
-        margin-top:20px;
-    ">
-        <h1>👋 Hello, {st.session_state.user_name}</h1>
-        <h4 style="color:#aaa;">Welcome to Credit Risk Intelligence</h4>
+    st.markdown("## 👋 Welcome")
+    st.write("### Credit Risk Intelligence Platform")
 
-        <hr style="margin:20px 0; border:0.5px solid rgba(255,255,255,0.1);">
+    st.write("---")
 
-        <h3>🚀 What this app does</h3>
-        <ul>
-            <li>Predicts loan default risk using Machine Learning</li>
-            <li>Uses XGBoost model for high accuracy</li>
-            <li>Provides real-time risk classification</li>
-            <li>Gives financial insights based on inputs</li>
-        </ul>
+    st.subheader("🚀 What this app does")
+    st.write("""
+    - Predicts loan default risk using Machine Learning  
+    - Uses XGBoost model for high accuracy  
+    - Provides real-time risk classification  
+    - Gives financial insights based on inputs  
+    """)
 
-        <h3>📊 Key Inputs</h3>
-        <ul>
-            <li>Debt Ratio</li>
-            <li>Monthly Income</li>
-            <li>Late Payments</li>
-            <li>Credit Utilization</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
+    st.subheader("📊 Key Inputs")
+    st.write("""
+    - Debt Ratio  
+    - Monthly Income  
+    - Late Payments  
+    - Credit Utilization  
+    """)
 
 # ---------- DASHBOARD ----------
 elif page == "📊 Dashboard":
-    st.title("📊 Dashboard (We will design later)")
+    st.title("📊 Dashboard (Coming next)")
 
-# ---------- PREDICTION (UNCHANGED LOGIC) ----------
+# ---------- PREDICTION (UNCHANGED) ----------
 elif page == "🔍 Prediction":
 
     st.title("🔍 Credit Risk Prediction")
@@ -196,7 +177,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # 🔒 EXACT SAME LOGIC
+        # 🔒 SAME LOGIC
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
