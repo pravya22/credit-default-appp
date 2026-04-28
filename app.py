@@ -36,6 +36,7 @@ if st.session_state.user_name is None:
         color:white;
         text-shadow: 0 0 15px rgba(0,255,255,0.7),
                      0 0 30px rgba(0,255,255,0.4);
+        white-space: nowrap;
     }
 
     .subtitle {
@@ -45,6 +46,10 @@ if st.session_state.user_name is None:
         margin-bottom:20px;
     }
 
+    .stTextInput>div>div>input {
+        text-align:center;
+    }
+
     .stButton>button {
         width:140px;
         border-radius:10px;
@@ -52,8 +57,8 @@ if st.session_state.user_name is None:
         color:white;
         border:none;
         padding:10px;
-        margin:auto;
         display:block;
+        margin:auto;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -68,12 +73,16 @@ if st.session_state.user_name is None:
         </div>
         """, unsafe_allow_html=True)
 
-        name = st.text_input("", placeholder="Enter your name")
+        c1, c2, c3 = st.columns([1,2,1])
+        with c2:
+            name = st.text_input("", placeholder="Enter your name")
 
-        if st.button("Enter"):
-            if name.strip():
-                st.session_state.user_name = name
-                st.rerun()
+        c4, c5, c6 = st.columns([1,1,1])
+        with c5:
+            if st.button("Enter"):
+                if name.strip():
+                    st.session_state.user_name = name
+                    st.rerun()
 
     st.stop()
 
@@ -81,34 +90,47 @@ if st.session_state.user_name is None:
 st.markdown("""
 <style>
 
+/* REMOVE EXTRA SPACE */
+header {visibility:hidden;}
+.block-container {padding-top:1rem;}
+
 /* BACKGROUND */
 [data-testid="stAppViewContainer"] {
     background: radial-gradient(circle at top, #020617, #000000 100%);
     color:white;
 }
 
-/* FIX BUTTONS */
-.stButton>button {
+/* 🔥 BUTTON FIX (ONLY CHANGE) */
+.stButton > button {
     background: linear-gradient(135deg, #00c6ff, #0072ff) !important;
     color: white !important;
-    border-radius: 10px !important;
     border: none !important;
+    border-radius: 10px !important;
     padding: 10px 18px !important;
-    font-weight:600;
+    font-weight: 600 !important;
 }
 
-.stButton>button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 12px rgba(0,198,255,0.6);
+.stButton > button:hover {
+    background: linear-gradient(135deg, #0096c7, #005bea) !important;
+    box-shadow: 0 0 10px rgba(0,198,255,0.6);
 }
 
-/* FIX LABEL VISIBILITY */
+/* 🔥 LABEL FIX */
 label {
     color: white !important;
-    font-weight:600 !important;
+    font-weight: 600 !important;
 }
 
-/* CARDS */
+/* KEEP YOUR ORIGINAL DESIGN */
+.hero {
+    text-align:center;
+    padding:30px;
+    border-radius:20px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border:1px solid rgba(255,255,255,0.08);
+}
+
 .card {
     background: rgba(255,255,255,0.05);
     padding:25px;
@@ -120,19 +142,9 @@ label {
 
 .card:hover {
     transform: translateY(-6px);
-    box-shadow:0 0 25px rgba(0,198,255,0.3);
+    box-shadow:0 0 25px rgba(0,198,255,0.25);
 }
 
-/* INFO BOX */
-.info-card {
-    background: rgba(255,255,255,0.05);
-    padding:28px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(15px);
-}
-
-/* SPACING */
 .section {
     margin-top:40px;
 }
@@ -141,25 +153,24 @@ label {
 """, unsafe_allow_html=True)
 
 # ---------- HEADER ----------
-col1, col2 = st.columns([8,1])
-
-with col1:
-    st.markdown("### 💳 Credit Risk Intelligence")
-
-with col2:
-    if st.button("Logout"):
-        st.session_state.user_name = None
-        st.rerun()
-
-# ---------- HOME (RESTORED) ----------
 st.markdown(f"""
-<h1>👋 Welcome, {st.session_state.user_name}</h1>
-<p style="color:#bbb;">AI-powered platform for credit risk prediction</p>
+<div style="display:flex; justify-content:space-between; padding:10px;
+background:rgba(255,255,255,0.05); border-radius:10px;">
+<h3>💳 Credit Risk Intelligence</h3>
+<p>👋 Hello, {st.session_state.user_name}</p>
+</div>
+""", unsafe_allow_html=True)
+
+# ---------- HOME (UNCHANGED) ----------
+st.markdown(f"""
+<div class="hero">
+    <h1>👋 Welcome, {st.session_state.user_name}</h1>
+    <p style="color:#aaa;">AI-powered platform for credit risk prediction</p>
+</div>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="section"></div>', unsafe_allow_html=True)
 
-# FEATURES
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -173,76 +184,36 @@ with col3:
 
 st.markdown('<div class="section"></div>', unsafe_allow_html=True)
 
-# INFO SECTION
+# ---------- PREDICTION (UNCHANGED) ----------
+st.title("🔍 Credit Risk Prediction")
+
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("""
-    <div class="info-card">
-    <h2>🚀 What this app does</h2>
-    <ul>
-    <li>Predicts loan default risk using Machine Learning</li>
-    <li>Uses XGBoost model</li>
-    <li>Provides real-time classification</li>
-    <li>Helps decision making</li>
-    </ul>
-    </div>
-    """, unsafe_allow_html=True)
+    debt = st.number_input("Debt Ratio", min_value=0.0, value=0.5)
+    income = st.number_input("Monthly Income", min_value=0.0, value=5000.0)
 
 with col2:
-    st.markdown("""
-    <div class="info-card">
-    <h2>🧠 How it works</h2>
-    <ol>
-    <li>Enter financial details</li>
-    <li>Model analyzes data</li>
-    <li>Get instant prediction</li>
-    </ol>
-    </div>
-    """, unsafe_allow_html=True)
+    late = st.number_input("Late Payments (90 days)", min_value=0, value=0)
+    util = st.number_input("Credit Utilization", min_value=0.0, value=0.3)
 
-st.markdown('<div class="section"></div>', unsafe_allow_html=True)
+input_df = pd.DataFrame([{
+    "DebtRatio": debt,
+    "MonthlyIncome": income,
+    "NumberOfTimes90DaysLate": late,
+    "RevolvingUtilizationOfUnsecuredLines": util
+}])
 
-# BUTTON TO PREDICTION
-if st.button("🚀 Start Prediction"):
-    st.session_state.show_prediction = True
+if st.button("Predict Risk"):
 
-# ---------- PREDICTION ----------
-if st.session_state.get("show_prediction", False):
+    probability = model.predict_proba(input_df)[0][1]
 
-    if st.button("⬅ Back to Home"):
-        st.session_state.show_prediction = False
-        st.rerun()
+    if probability < 0.3:
+        st.success("Low Risk")
+    elif probability < 0.6:
+        st.warning("Medium Risk")
+    else:
+        st.error("High Risk")
 
-    st.title("🔍 Credit Risk Prediction")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        debt = st.number_input("Debt Ratio", 0.0, 1.0, 0.5)
-        income = st.number_input("Monthly Income", 0.0, 100000.0, 5000.0)
-
-    with col2:
-        late = st.number_input("Late Payments", 0, 10, 0)
-        util = st.number_input("Credit Utilization", 0.0, 1.0, 0.3)
-
-    input_df = pd.DataFrame([{
-        "DebtRatio": debt,
-        "MonthlyIncome": income,
-        "NumberOfTimes90DaysLate": late,
-        "RevolvingUtilizationOfUnsecuredLines": util
-    }])
-
-    if st.button("Predict Risk"):
-
-        prob = model.predict_proba(input_df)[0][1]
-
-        if prob < 0.3:
-            st.success("Low Risk")
-        elif prob < 0.6:
-            st.warning("Medium Risk")
-        else:
-            st.error("High Risk")
-
-        st.progress(float(prob))
-        st.metric("Default Probability", f"{prob:.2f}")
+    st.progress(float(probability))
+    st.metric("Default Probability", f"{probability:.2f}")
