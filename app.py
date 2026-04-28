@@ -5,14 +5,13 @@ import pickle
 # Load model
 model = pickle.load(open("model.pkl", "rb"))
 
-# Page config
 st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layout="wide")
 
 # ---------- SESSION ----------
 if "user_name" not in st.session_state:
     st.session_state.user_name = None
 
-# ---------- WELCOME SCREEN ----------
+# ---------- WELCOME PAGE (DO NOT TOUCH) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -21,37 +20,44 @@ if st.session_state.user_name is None:
         background: radial-gradient(circle at center, #0f172a 0%, black 80%);
     }
 
+    .main-container {
+        height: 100vh;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+    }
+
     .glass {
         background: rgba(255,255,255,0.05);
-        padding:25px;
-        border-radius:20px;
-        backdrop-filter: blur(12px);
-        border:1px solid rgba(255,255,255,0.1);
+        padding:20px;
+        border-radius:16px;
+        backdrop-filter: blur(10px);
+        border:1px solid rgba(255,255,255,0.08);
         text-align:center;
+        margin-bottom:20px;
     }
 
     .title {
-        font-size:40px;
+        font-size:44px;
         font-weight:800;
         color:white;
-        text-shadow: 0 0 15px rgba(0,255,255,0.7),
-                     0 0 30px rgba(0,255,255,0.4);
+        text-shadow: 0 0 10px rgba(0,255,255,0.6),
+                     0 0 20px rgba(0,255,255,0.3);
         white-space: nowrap;
     }
 
     .subtitle {
         color:#aaa;
         font-size:15px;
-        margin-top:10px;
-        margin-bottom:20px;
+        margin-top:8px;
     }
 
-    /* Center input text */
     .stTextInput>div>div>input {
         text-align:center;
+        border-radius:10px;
     }
 
-    /* Button style */
     .stButton>button {
         width:140px;
         border-radius:10px;
@@ -69,31 +75,30 @@ if st.session_state.user_name is None:
     </style>
     """, unsafe_allow_html=True)
 
-    # Center layout using columns
-    left, center, right = st.columns([1,2,1])
+    st.markdown("<div class='main-container'>", unsafe_allow_html=True)
 
-    with center:
-
-        # Title card
-        st.markdown("""
+    # Title
+    st.markdown("""
         <div class="glass">
             <div class="title">💳 Credit Risk Intelligence</div>
             <div class="subtitle">Welcome to AI-powered risk analysis</div>
         </div>
-        """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-        # Small centered input
-        c1, c2, c3 = st.columns([1,2,1])
-        with c2:
-            name = st.text_input("", placeholder="Enter your name")
+    # Input
+    c1, c2, c3 = st.columns([3,2,3])
+    with c2:
+        name = st.text_input("", placeholder="Enter your name")
 
-        # Center button
-        c4, c5, c6 = st.columns([1,1,1])
-        with c5:
-            if st.button("Enter"):
-                if name.strip():
-                    st.session_state.user_name = name
-                    st.rerun()
+    # Button
+    c4, c5, c6 = st.columns([3,1.5,3])
+    with c5:
+        if st.button("Enter"):
+            if name.strip():
+                st.session_state.user_name = name
+                st.rerun()
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
     st.stop()
 
@@ -113,7 +118,7 @@ st.markdown("""
 
 # ---------- SIDEBAR ----------
 st.sidebar.markdown("## 📌 Navigation")
-page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction", "ℹ️ About"])
+page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction"])
 
 if st.sidebar.button("Logout"):
     st.session_state.user_name = None
@@ -128,16 +133,44 @@ background:rgba(255,255,255,0.05); border-radius:10px;">
 </div>
 """, unsafe_allow_html=True)
 
-# ---------- HOME ----------
+# ---------- HOME (FIXED CLEAN UI) ----------
 if page == "🏠 Home":
-    st.title(f"👋 Hello, {st.session_state.user_name}")
-    st.markdown("### Welcome to your dashboard")
+
+    st.markdown(f"""
+    <div style="
+        background: rgba(255,255,255,0.05);
+        padding:30px;
+        border-radius:15px;
+        margin-top:20px;
+    ">
+        <h1>👋 Hello, {st.session_state.user_name}</h1>
+        <h4 style="color:#aaa;">Welcome to Credit Risk Intelligence</h4>
+
+        <hr style="margin:20px 0; border:0.5px solid rgba(255,255,255,0.1);">
+
+        <h3>🚀 What this app does</h3>
+        <ul>
+            <li>Predicts loan default risk using Machine Learning</li>
+            <li>Uses XGBoost model for high accuracy</li>
+            <li>Provides real-time risk classification</li>
+            <li>Gives financial insights based on inputs</li>
+        </ul>
+
+        <h3>📊 Key Inputs</h3>
+        <ul>
+            <li>Debt Ratio</li>
+            <li>Monthly Income</li>
+            <li>Late Payments</li>
+            <li>Credit Utilization</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ---------- DASHBOARD ----------
 elif page == "📊 Dashboard":
-    st.title("📊 Dashboard")
+    st.title("📊 Dashboard (We will design later)")
 
-# ---------- PREDICTION ----------
+# ---------- PREDICTION (UNCHANGED LOGIC) ----------
 elif page == "🔍 Prediction":
 
     st.title("🔍 Credit Risk Prediction")
@@ -163,7 +196,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # 🔒 UNCHANGED LOGIC
+        # 🔒 EXACT SAME LOGIC
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
@@ -174,21 +207,6 @@ elif page == "🔍 Prediction":
         st.progress(float(probability))
         st.metric("Default Probability", f"{probability:.2f}")
 
-# ---------- ABOUT ----------
-elif page == "ℹ️ About":
-    st.title("ℹ️ About")
-    st.write("""
-    This app predicts loan default risk using Machine Learning.
-
-    Model: XGBoost  
-
-    Inputs:
-    - Debt Ratio  
-    - Monthly Income  
-    - Late Payments  
-    - Credit Utilization  
-    """)
-
 # ---------- FOOTER ----------
 st.markdown("---")
-st.markdown("Made with ❤️ using Machine Learning & Streamlit") this was the app.py when my welcome page got fixed
+st.markdown("Made with ❤️ using Machine Learning & Streamlit")
