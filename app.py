@@ -48,6 +48,8 @@ if st.session_state.user_name is None:
 
     .stTextInput>div>div>input {
         text-align:center;
+        max-width: 250px;
+        margin: auto;
     }
 
     .stButton>button {
@@ -89,99 +91,64 @@ if st.session_state.user_name is None:
 # ---------- GLOBAL UI ----------
 st.markdown("""
 <style>
-
-/* REMOVE EXTRA SPACE */
-header {visibility:hidden;}
-.block-container {padding-top:1rem;}
-
-/* BACKGROUND */
 [data-testid="stAppViewContainer"] {
-    background: radial-gradient(circle at top, #020617, #000000);
-    color:white;
+    background: linear-gradient(135deg, #020617, #0f172a);
+    color: white;
 }
 
 /* SIDEBAR */
 [data-testid="stSidebar"] {
     background: linear-gradient(180deg, #020617, #000000);
-    padding-top:30px;
+    padding-top: 30px;
+    border-right: 1px solid rgba(0,255,255,0.1);
 }
 
 /* NAV TITLE */
 section[data-testid="stSidebar"] h2 {
-    font-size:22px;
-    font-weight:700;
-    color:#00e5ff;
-    text-align:center;
-    letter-spacing:1px;
-    text-shadow:
-        0 0 10px rgba(0,229,255,0.9),
-        0 0 25px rgba(0,229,255,0.6);
-    margin-bottom:20px;
+    font-size: 24px;
+    font-weight: 800;
+    color: #00e5ff;
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 0 0 12px rgba(0,229,255,1);
 }
 
-/* NAV ITEMS */
+/* RADIO */
 div[role="radiogroup"] > label {
-    padding:14px;
-    border-radius:14px;
-    margin-bottom:12px;
-    font-size:15px;
-    color:#e5e7eb;
-    transition:0.3s;
+    display: block;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    color: #cbd5e1;
+    transition: 0.3s;
 }
 
-/* HOVER */
 div[role="radiogroup"] > label:hover {
-    background: rgba(0,229,255,0.12);
+    background: rgba(0,229,255,0.15);
     transform: translateX(6px);
+    color: white;
 }
 
 /* ACTIVE */
 div[role="radiogroup"] input:checked + div {
-    background: rgba(0,229,255,0.25);
-    box-shadow:0 0 15px rgba(0,229,255,0.7);
-    border-radius:12px;
-    font-weight:600;
-    color:white;
+    background: linear-gradient(135deg, rgba(0,229,255,0.3), rgba(0,114,255,0.2));
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(0,229,255,0.7);
 }
 
 /* LOGOUT */
 .stSidebar button {
-    border-radius:12px;
-    background: linear-gradient(135deg, #1f2937, #111827);
-    color:white;
-    border:1px solid rgba(255,255,255,0.1);
-    margin-top:20px;
+    border-radius: 12px;
+    background: #111827;
+    color: white;
 }
-
-/* CARDS */
-.card {
-    background: rgba(255,255,255,0.05);
-    padding:25px;
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,0.08);
-    text-align:center;
-    transition:0.3s;
-}
-
-.card:hover {
-    transform: translateY(-6px);
-    box-shadow:0 0 20px rgba(0,229,255,0.3);
-}
-
-/* SECTION SPACING */
-.section {
-    margin-top:40px;
-}
-
-h1, h2, h3 {
-    text-align:center;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
 # ---------- SIDEBAR ----------
-st.sidebar.markdown("## 📌 Navigation")
+st.sidebar.markdown("## 🚀 Navigation")
 page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction"])
 
 if st.sidebar.button("Logout"):
@@ -197,60 +164,55 @@ background:rgba(255,255,255,0.05); border-radius:10px;">
 </div>
 """, unsafe_allow_html=True)
 
-# ---------- HOME ----------
+# ---------- HOME (UPGRADED) ----------
 if page == "🏠 Home":
 
-    st.markdown(f"# 👋 Welcome, {st.session_state.user_name}")
-    st.markdown("### Credit Risk Intelligence Platform")
+    st.markdown(f"""
+    <div style="text-align:center; margin-top:20px;">
+        <h1>👋 Welcome, {st.session_state.user_name}</h1>
+        <h3 style="color:#aaa;">Credit Risk Intelligence Platform</h3>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown('<div class="section"></div>', unsafe_allow_html=True)
-
-    # WHAT APP DOES (IMPROVED)
-    st.markdown("## 🚀 What this app does")
+    st.markdown("### 🚀 What this app does")
 
     col1, col2 = st.columns(2)
 
     with col1:
         st.markdown("""
-        ✅ **Predicts loan default risk**  
-        Using Machine Learning  
-        
-        ⚡ **Real-time analysis**  
-        Instant classification  
+        ✅ Predicts loan default risk  
+        ⚡ Real-time risk analysis  
         """)
 
     with col2:
         st.markdown("""
-        🎯 **High accuracy model**  
-        Powered by XGBoost  
-        
-        📊 **Financial insights**  
-        Better decision making  
+        🎯 High accuracy (XGBoost)  
+        📊 Financial insights  
         """)
 
-    st.markdown('<div class="section"></div>', unsafe_allow_html=True)
+    st.markdown("---")
 
-    # CARDS
-    col1, col2, col3 = st.columns(3)
+    st.markdown("### ✨ Features")
 
-    with col1:
-        st.markdown('<div class="card">📊<br><b>Accurate Prediction</b></div>', unsafe_allow_html=True)
+    f1, f2, f3 = st.columns(3)
 
-    with col2:
-        st.markdown('<div class="card">⚡<br><b>Fast Results</b></div>', unsafe_allow_html=True)
+    with f1:
+        st.info("📊 Accurate Prediction")
 
-    with col3:
-        st.markdown('<div class="card">📈<br><b>Smart Insights</b></div>', unsafe_allow_html=True)
+    with f2:
+        st.info("⚡ Fast Results")
 
-    st.markdown('<div class="section"></div>', unsafe_allow_html=True)
+    with f3:
+        st.info("💡 Smart Insights")
 
-    # HOW IT WORKS (CLEAN)
-    st.markdown("## 🧠 How it works")
+    st.markdown("---")
+
+    st.markdown("### 🧠 How it works")
 
     st.markdown("""
-    **1.** Enter financial details  
-    **2.** Model analyzes risk  
-    **3.** Get instant prediction  
+    1. Enter financial details  
+    2. Model analyzes risk  
+    3. Get instant prediction  
     """)
 
 # ---------- DASHBOARD ----------
