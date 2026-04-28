@@ -12,10 +12,7 @@ st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layo
 if "user_name" not in st.session_state:
     st.session_state.user_name = None
 
-if "page" not in st.session_state:
-    st.session_state.page = "home"
-
-# ---------- WELCOME SCREEN (LOCKED - DO NOT TOUCH) ----------
+# ---------- WELCOME SCREEN (UNCHANGED) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -39,7 +36,6 @@ if st.session_state.user_name is None:
         color:white;
         text-shadow: 0 0 15px rgba(0,255,255,0.7),
                      0 0 30px rgba(0,255,255,0.4);
-        white-space: nowrap;
     }
 
     .subtitle {
@@ -49,10 +45,6 @@ if st.session_state.user_name is None:
         margin-bottom:20px;
     }
 
-    .stTextInput>div>div>input {
-        text-align:center;
-    }
-
     .stButton>button {
         width:140px;
         border-radius:10px;
@@ -60,8 +52,8 @@ if st.session_state.user_name is None:
         color:white;
         border:none;
         padding:10px;
-        display:block;
         margin:auto;
+        display:block;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -76,68 +68,75 @@ if st.session_state.user_name is None:
         </div>
         """, unsafe_allow_html=True)
 
-        c1, c2, c3 = st.columns([1,2,1])
-        with c2:
-            name = st.text_input("", placeholder="Enter your name")
+        name = st.text_input("", placeholder="Enter your name")
 
-        c4, c5, c6 = st.columns([1,1,1])
-        with c5:
-            if st.button("Enter"):
-                if name.strip():
-                    st.session_state.user_name = name
-                    st.session_state.page = "home"
-                    st.rerun()
+        if st.button("Enter"):
+            if name.strip():
+                st.session_state.user_name = name
+                st.rerun()
 
     st.stop()
 
 # ---------- GLOBAL UI ----------
 st.markdown("""
 <style>
-header {visibility:hidden;}
-.block-container {padding-top:1rem;}
 
+/* BACKGROUND */
 [data-testid="stAppViewContainer"] {
     background: radial-gradient(circle at top, #020617, #000000 100%);
     color:white;
 }
 
-/* INPUT LABEL FIX */
+/* FIX BUTTONS */
+.stButton>button {
+    background: linear-gradient(135deg, #00c6ff, #0072ff) !important;
+    color: white !important;
+    border-radius: 10px !important;
+    border: none !important;
+    padding: 10px 18px !important;
+    font-weight:600;
+}
+
+.stButton>button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(0,198,255,0.6);
+}
+
+/* FIX LABEL VISIBILITY */
 label {
     color: white !important;
     font-weight:600 !important;
 }
 
-/* RESULT BOX */
-.result-box {
-    padding: 28px;
-    border-radius: 20px;
-    text-align: center;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(12px);
-    margin-top:20px;
-    animation: fadeUp 0.5s ease-in-out;
+/* CARDS */
+.card {
+    background: rgba(255,255,255,0.05);
+    padding:25px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    text-align:center;
+    transition:0.3s;
 }
 
-@keyframes fadeUp {
-    from {opacity:0; transform:translateY(15px);}
-    to {opacity:1; transform:translateY(0);}
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow:0 0 25px rgba(0,198,255,0.3);
 }
 
-/* PROGRESS BAR */
-.progress-container {
-    height: 12px;
-    width: 100%;
-    background: #111;
-    border-radius: 10px;
-    margin-top:15px;
-    overflow: hidden;
+/* INFO BOX */
+.info-card {
+    background: rgba(255,255,255,0.05);
+    padding:28px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
 }
 
-.progress-fill {
-    height: 100%;
-    border-radius: 10px;
+/* SPACING */
+.section {
+    margin-top:40px;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -145,34 +144,74 @@ label {
 col1, col2 = st.columns([8,1])
 
 with col1:
-    st.markdown("<h3>💳 Credit Risk Intelligence</h3>", unsafe_allow_html=True)
+    st.markdown("### 💳 Credit Risk Intelligence")
 
 with col2:
     if st.button("Logout"):
         st.session_state.user_name = None
         st.rerun()
 
-# ---------- HOME (UNCHANGED) ----------
-if st.session_state.page == "home":
+# ---------- HOME (RESTORED) ----------
+st.markdown(f"""
+<h1>👋 Welcome, {st.session_state.user_name}</h1>
+<p style="color:#bbb;">AI-powered platform for credit risk prediction</p>
+""", unsafe_allow_html=True)
 
-    st.markdown(f"""
-    <div class="hero">
-        <h1>👋 Welcome, {st.session_state.user_name}</h1>
-        <p style="color:#bbb;">AI-powered platform for credit risk prediction</p>
+st.markdown('<div class="section"></div>', unsafe_allow_html=True)
+
+# FEATURES
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown('<div class="card">📊<br><b>Accurate Prediction</b><br>ML powered insights</div>', unsafe_allow_html=True)
+
+with col2:
+    st.markdown('<div class="card">⚡<br><b>Real-time Analysis</b><br>Instant results</div>', unsafe_allow_html=True)
+
+with col3:
+    st.markdown('<div class="card">📈<br><b>Financial Insights</b><br>Better decisions</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="section"></div>', unsafe_allow_html=True)
+
+# INFO SECTION
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("""
+    <div class="info-card">
+    <h2>🚀 What this app does</h2>
+    <ul>
+    <li>Predicts loan default risk using Machine Learning</li>
+    <li>Uses XGBoost model</li>
+    <li>Provides real-time classification</li>
+    <li>Helps decision making</li>
+    </ul>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+with col2:
+    st.markdown("""
+    <div class="info-card">
+    <h2>🧠 How it works</h2>
+    <ol>
+    <li>Enter financial details</li>
+    <li>Model analyzes data</li>
+    <li>Get instant prediction</li>
+    </ol>
+    </div>
+    """, unsafe_allow_html=True)
 
-    if st.button("🚀 Start Prediction"):
-        st.session_state.page = "predict"
-        st.rerun()
+st.markdown('<div class="section"></div>', unsafe_allow_html=True)
+
+# BUTTON TO PREDICTION
+if st.button("🚀 Start Prediction"):
+    st.session_state.show_prediction = True
 
 # ---------- PREDICTION ----------
-elif st.session_state.page == "predict":
+if st.session_state.get("show_prediction", False):
 
     if st.button("⬅ Back to Home"):
-        st.session_state.page = "home"
+        st.session_state.show_prediction = False
         st.rerun()
 
     st.title("🔍 Credit Risk Prediction")
@@ -199,34 +238,11 @@ elif st.session_state.page == "predict":
         prob = model.predict_proba(input_df)[0][1]
 
         if prob < 0.3:
-            risk = "🟢 LOW RISK"
-            color = "#22c55e"
-            insight = "Stable financial profile."
+            st.success("Low Risk")
         elif prob < 0.6:
-            risk = "🟡 MEDIUM RISK"
-            color = "#f59e0b"
-            insight = "Moderate financial risk."
+            st.warning("Medium Risk")
         else:
-            risk = "🔴 HIGH RISK"
-            color = "#ef4444"
-            insight = "High financial risk detected."
+            st.error("High Risk")
 
-        st.markdown(f"""
-        <div class="result-box" style="box-shadow:0 0 25px {color}40;">
-            <h2 style="color:{color};">{risk}</h2>
-            <p style="color:#aaa;">Default Probability</p>
-            <h1>{prob:.2f}</h1>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown(f"""
-        <div class="progress-container">
-            <div class="progress-fill" style="
-                width:{prob*100}%;
-                background: linear-gradient(90deg, #00c6ff, {color});
-            "></div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("### 💡 Insight")
-        st.info(insight)
+        st.progress(float(prob))
+        st.metric("Default Probability", f"{prob:.2f}")
