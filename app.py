@@ -90,7 +90,7 @@ if st.session_state.user_name is None:
 st.markdown("""
 <style>
 
-/* CLEAN TOP */
+/* CLEAN */
 header {visibility:hidden;}
 .block-container {padding-top:1rem;}
 
@@ -102,15 +102,15 @@ header {visibility:hidden;}
 
 /* SIDEBAR */
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #020617, #020617);
+    background: #020617;
     padding-top:30px;
 }
 
 /* NAV TITLE */
 section[data-testid="stSidebar"] h2 {
     color:#00c6ff;
-    font-weight:700;
     font-size:20px;
+    font-weight:700;
     text-shadow:0 0 12px rgba(0,198,255,0.9);
 }
 
@@ -119,7 +119,6 @@ div[role="radiogroup"] > label {
     padding:14px;
     border-radius:14px;
     margin-bottom:10px;
-    font-size:15px;
     transition:0.3s;
 }
 
@@ -183,11 +182,30 @@ div[role="radiogroup"] input:checked + div {
     border:1px solid rgba(255,255,255,0.1);
     backdrop-filter: blur(15px);
     transition:0.4s;
+    position:relative;
+    box-shadow: inset 0 0 20px rgba(0,198,255,0.05);
 }
 
 .info-card:hover {
     transform: translateY(-8px);
     box-shadow:0 0 35px rgba(0,198,255,0.3);
+}
+
+/* DIVIDER */
+.divider {
+    height:2px;
+    width:60px;
+    margin:10px auto 20px;
+    background:linear-gradient(90deg,#00c6ff,#7c3aed);
+    box-shadow:0 0 10px rgba(0,198,255,0.8);
+    border-radius:10px;
+}
+
+/* TEXT */
+ul li, ol li {
+    margin-bottom:12px;
+    line-height:1.6;
+    color:#ddd;
 }
 
 /* SPACING */
@@ -226,7 +244,9 @@ if page == "🏠 Home":
     st.markdown(f"""
     <div class="hero">
         <h1>👋 Welcome, {st.session_state.user_name}</h1>
-        <p style="color:#aaa;">AI-powered platform for credit risk prediction</p>
+        <p style="color:#bbb; font-size:16px;">
+        AI-powered platform for credit risk prediction
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -246,13 +266,14 @@ if page == "🏠 Home":
 
     st.markdown('<div class="section"></div>', unsafe_allow_html=True)
 
-    # GLASS INFO SECTION
+    # GLASS INFO
     col1, col2 = st.columns(2)
 
     with col1:
         st.markdown("""
         <div class="info-card">
-            <h2 class="gradient-text">🚀 What this app does</h2>
+            <h2 class="gradient-text" style="font-size:26px;">🚀 What this app does</h2>
+            <div class="divider"></div>
             <ul>
                 <li>✅ Predicts loan default risk using Machine Learning</li>
                 <li>🎯 Uses XGBoost model for high accuracy</li>
@@ -265,7 +286,8 @@ if page == "🏠 Home":
     with col2:
         st.markdown("""
         <div class="info-card">
-            <h2 class="gradient-text">🧠 How it works</h2>
+            <h2 class="gradient-text" style="font-size:26px;">🧠 How it works</h2>
+            <div class="divider"></div>
             <ol>
                 <li>Enter financial details</li>
                 <li>Model analyzes risk factors</li>
