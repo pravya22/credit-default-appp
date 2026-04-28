@@ -5,6 +5,7 @@ import pickle
 # Load model
 model = pickle.load(open("model.pkl", "rb"))
 
+# Page config
 st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layout="wide")
 
 # ---------- SESSION ----------
@@ -14,7 +15,7 @@ if "user_name" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# ---------- WELCOME PAGE (LOCKED - EXACT SAME) ----------
+# ---------- WELCOME SCREEN (LOCKED - DO NOT TOUCH) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -22,6 +23,7 @@ if st.session_state.user_name is None:
     .stApp {
         background: radial-gradient(circle at center, #0f172a 0%, black 80%);
     }
+
     .glass {
         background: rgba(255,255,255,0.05);
         padding:25px;
@@ -30,18 +32,27 @@ if st.session_state.user_name is None:
         border:1px solid rgba(255,255,255,0.1);
         text-align:center;
     }
+
     .title {
         font-size:40px;
         font-weight:800;
         color:white;
         text-shadow: 0 0 15px rgba(0,255,255,0.7),
                      0 0 30px rgba(0,255,255,0.4);
+        white-space: nowrap;
     }
+
     .subtitle {
         color:#aaa;
+        font-size:15px;
         margin-top:10px;
         margin-bottom:20px;
     }
+
+    .stTextInput>div>div>input {
+        text-align:center;
+    }
+
     .stButton>button {
         width:140px;
         border-radius:10px;
@@ -65,17 +76,21 @@ if st.session_state.user_name is None:
         </div>
         """, unsafe_allow_html=True)
 
-        name = st.text_input("", placeholder="Enter your name")
+        c1, c2, c3 = st.columns([1,2,1])
+        with c2:
+            name = st.text_input("", placeholder="Enter your name")
 
-        if st.button("Enter"):
-            if name.strip():
-                st.session_state.user_name = name
-                st.session_state.page = "home"
-                st.rerun()
+        c4, c5, c6 = st.columns([1,1,1])
+        with c5:
+            if st.button("Enter"):
+                if name.strip():
+                    st.session_state.user_name = name
+                    st.session_state.page = "home"
+                    st.rerun()
 
     st.stop()
 
-# ---------- GLOBAL STYLE ----------
+# ---------- GLOBAL UI ----------
 st.markdown("""
 <style>
 header {visibility:hidden;}
@@ -86,42 +101,43 @@ header {visibility:hidden;}
     color:white;
 }
 
-.stButton>button {
-    background: linear-gradient(135deg, #00c6ff, #7c3aed);
-    color:white;
-    border:none;
-    border-radius:10px;
-    padding:10px 20px;
-    font-weight:600;
-}
-
+/* INPUT LABEL FIX */
 label {
-    color: #e5e7eb !important;
-    font-size: 15px !important;
-    font-weight: 600 !important;
+    color: white !important;
+    font-weight:600 !important;
 }
 
-.hero {
-    text-align:center;
-    padding:35px;
-    border-radius:20px;
-    background: rgba(255,255,255,0.05);
+/* RESULT BOX */
+.result-box {
+    padding: 28px;
+    border-radius: 20px;
+    text-align: center;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    margin-top:20px;
+    animation: fadeUp 0.5s ease-in-out;
 }
 
-.card {
-    background: rgba(255,255,255,0.05);
-    padding:25px;
-    border-radius:15px;
-    text-align:center;
+@keyframes fadeUp {
+    from {opacity:0; transform:translateY(15px);}
+    to {opacity:1; transform:translateY(0);}
 }
 
-.info {
-    background: rgba(255,255,255,0.05);
-    padding:25px;
-    border-radius:15px;
+/* PROGRESS BAR */
+.progress-container {
+    height: 12px;
+    width: 100%;
+    background: #111;
+    border-radius: 10px;
+    margin-top:15px;
+    overflow: hidden;
 }
 
-.section {margin-top:40px;}
+.progress-fill {
+    height: 100%;
+    border-radius: 10px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -136,28 +152,17 @@ with col2:
         st.session_state.user_name = None
         st.rerun()
 
-# ---------- HOME ----------
+# ---------- HOME (UNCHANGED) ----------
 if st.session_state.page == "home":
 
     st.markdown(f"""
     <div class="hero">
         <h1>👋 Welcome, {st.session_state.user_name}</h1>
-        <p style="color:#aaa;">AI-powered platform for credit risk prediction</p>
+        <p style="color:#bbb;">AI-powered platform for credit risk prediction</p>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="section"></div>', unsafe_allow_html=True)
-
-    c1, c2, c3 = st.columns(3)
-
-    with c1:
-        st.markdown('<div class="card">📊<br><b>Accurate Prediction</b></div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown('<div class="card">⚡<br><b>Real-time Analysis</b></div>', unsafe_allow_html=True)
-    with c3:
-        st.markdown('<div class="card">📈<br><b>Financial Insights</b></div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="section"></div>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("🚀 Start Prediction"):
         st.session_state.page = "predict"
@@ -194,46 +199,34 @@ elif st.session_state.page == "predict":
         prob = model.predict_proba(input_df)[0][1]
 
         if prob < 0.3:
-            label = "🟢 LOW RISK"
+            risk = "🟢 LOW RISK"
             color = "#22c55e"
+            insight = "Stable financial profile."
         elif prob < 0.6:
-            label = "🟡 MEDIUM RISK"
+            risk = "🟡 MEDIUM RISK"
             color = "#f59e0b"
+            insight = "Moderate financial risk."
         else:
-            label = "🔴 HIGH RISK"
+            risk = "🔴 HIGH RISK"
             color = "#ef4444"
+            insight = "High financial risk detected."
 
-        # RESULT CARD
         st.markdown(f"""
-        <div style="padding:25px;border-radius:18px;background:rgba(255,255,255,0.05);text-align:center;">
-            <h2 style="color:{color};">{label}</h2>
+        <div class="result-box" style="box-shadow:0 0 25px {color}40;">
+            <h2 style="color:{color};">{risk}</h2>
+            <p style="color:#aaa;">Default Probability</p>
             <h1>{prob:.2f}</h1>
         </div>
         """, unsafe_allow_html=True)
 
-        st.progress(float(prob))
+        st.markdown(f"""
+        <div class="progress-container">
+            <div class="progress-fill" style="
+                width:{prob*100}%;
+                background: linear-gradient(90deg, #00c6ff, {color});
+            "></div>
+        </div>
+        """, unsafe_allow_html=True)
 
-        # 📊 CHART
-        st.subheader("📊 Input Overview")
-        chart_df = pd.DataFrame({
-            "Feature": ["Debt", "Income", "Late", "Utilization"],
-            "Value": [debt, income/10000, late, util]
-        })
-        st.bar_chart(chart_df.set_index("Feature"))
-
-        # 💡 EXPLANATION
-        st.subheader("💡 Why this prediction?")
-        reasons = []
-
-        if debt > 0.6:
-            reasons.append("High Debt Ratio increases risk")
-        if late > 2:
-            reasons.append("Frequent late payments detected")
-        if util > 0.7:
-            reasons.append("High credit utilization")
-
-        if len(reasons) == 0:
-            reasons.append("Your financial profile looks stable")
-
-        for r in reasons:
-            st.write("•", r)
+        st.markdown("### 💡 Insight")
+        st.info(insight)
