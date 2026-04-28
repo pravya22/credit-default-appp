@@ -18,7 +18,7 @@ if st.session_state.user_name is None:
     st.markdown("""
     <style>
     .stApp {
-        background-color: black;
+        background: radial-gradient(circle at center, #0f172a 0%, black 80%);
     }
 
     .stButton>button {
@@ -37,42 +37,52 @@ if st.session_state.user_name is None:
     </style>
     """, unsafe_allow_html=True)
 
-    # 👇 CENTER EVERYTHING
     left, center, right = st.columns([1,2,1])
 
     with center:
 
-        # ✅ SINGLE LINE TITLE
+        # Glass Card
         st.markdown("""
-        <div style='text-align:center;
-                    font-size:48px;
-                    font-weight:800;
-                    color:white;
-                    text-shadow: 0 0 15px rgba(0,255,255,0.7),
-                                 0 0 30px rgba(0,255,255,0.4);
-                    white-space: nowrap;'>
-            💳 Credit Risk Intelligence
-        </div>
-        """, unsafe_allow_html=True)
+        <div style='
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align:center;
+        '>
 
-        # Subtitle
-        st.markdown("""
-        <div style='text-align:center;
-                    color:#aaa;
-                    font-size:18px;
-                    margin-bottom:20px;'>
-            Welcome to AI-powered risk analysis
+            <div style='
+                font-size:48px;
+                font-weight:800;
+                color:white;
+                text-shadow: 0 0 15px rgba(0,255,255,0.7),
+                             0 0 30px rgba(0,255,255,0.4);
+                white-space: nowrap;
+            '>
+                💳 Credit Risk Intelligence
+            </div>
+
+            <div style='
+                color:#aaa;
+                font-size:16px;
+                margin-top:10px;
+                margin-bottom:25px;
+            '>
+                Welcome to AI-powered risk analysis
+            </div>
+
         </div>
         """, unsafe_allow_html=True)
 
         # Input
         name = st.text_input("", placeholder="Enter your name")
 
-        # ✅ CENTER BUTTON
-        b1, b2, b3 = st.columns([1,1,1])
-        with b2:
+        # Center button
+        c1, c2, c3 = st.columns([1,1,1])
+        with c2:
             if st.button("Enter"):
-                if name.strip() != "":
+                if name.strip():
                     st.session_state.user_name = name
                     st.rerun()
 
@@ -144,7 +154,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # ✅ SAME LOGIC (UNCHANGED)
+        # 🔒 Prediction logic unchanged
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
