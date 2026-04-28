@@ -123,7 +123,7 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 
 .hero {
     text-align: center;
-    padding: 48px 34px;
+    padding: 50px 34px;
     border-radius: 24px;
     background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
     backdrop-filter: blur(14px);
@@ -139,8 +139,32 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 .hero p {
     color: #cbd5e1;
     font-size: 17px;
-    max-width: 850px;
+    max-width: 860px;
     margin: 0 auto;
+}
+
+.stats-strip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 18px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+}
+
+.stat-box {
+    text-align: center;
+    padding: 10px 6px;
+}
+
+.stat-box h3 {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.stat-box p {
+    color: #cbd5e1;
+    font-size: 13px;
+    margin: 0;
 }
 
 .metric-card {
@@ -196,6 +220,14 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     line-height: 1.7;
 }
 
+.form-card {
+    background: rgba(255,255,255,0.05);
+    padding: 28px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-top: 10px;
+}
+
 .result-box {
     text-align: center;
     padding: 25px;
@@ -205,14 +237,17 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     border: 1px solid rgba(255,255,255,0.1);
 }
 
+.footer-box {
+    text-align: center;
+    padding-top: 24px;
+    padding-bottom: 10px;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
 .low { color: #22c55e; }
 .medium { color: #facc15; }
 .high { color: #ef4444; }
-
-.subtle {
-    color: #94a3b8 !important;
-    font-size: 14px;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -236,9 +271,33 @@ if st.session_state.page == "home":
     </div>
     """, unsafe_allow_html=True)
 
-    st.caption("Designed for quick loan-risk screening and decision support.")
+    # Stats strip
+    st.markdown('<div class="stats-strip">', unsafe_allow_html=True)
+    s1, s2, s3 = st.columns(3, gap="medium")
+    with s1:
+        st.markdown("""
+        <div class="stat-box">
+            <h3>4</h3>
+            <p>Core input features</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with s2:
+        st.markdown("""
+        <div class="stat-box">
+            <h3>3</h3>
+            <p>Risk levels generated</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with s3:
+        st.markdown("""
+        <div class="stat-box">
+            <h3>Real-time</h3>
+            <p>Instant prediction workflow</p>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # Row 1: value cards
+    # Row 1
     c1, c2, c3 = st.columns(3, gap="medium")
 
     with c1:
@@ -267,7 +326,7 @@ if st.session_state.page == "home":
 
     st.write("")
 
-    # Row 2: explanation
+    # Row 2
     c4, c5 = st.columns(2, gap="large")
 
     with c4:
@@ -298,7 +357,7 @@ if st.session_state.page == "home":
 
     st.write("")
 
-    # Row 3: inputs and benefits
+    # Row 3
     c6, c7 = st.columns(2, gap="large")
 
     with c6:
@@ -329,7 +388,6 @@ if st.session_state.page == "home":
 
     st.write("")
 
-    # Full width note
     st.markdown("""
     <div class="note-card">
         <h3>⚠️ Important Note</h3>
@@ -345,6 +403,12 @@ if st.session_state.page == "home":
             st.session_state.page = "prediction"
             st.rerun()
 
+    st.markdown("""
+    <div class="footer-box">
+        Built with Streamlit and machine learning for credit risk decision support.
+    </div>
+    """, unsafe_allow_html=True)
+
 # ---------------- PREDICTION PAGE ----------------
 elif st.session_state.page == "prediction":
 
@@ -356,6 +420,8 @@ elif st.session_state.page == "prediction":
 
     st.title("🔍 Credit Risk Prediction")
     st.caption("Enter the applicant's financial details below to estimate loan default risk.")
+
+    st.markdown('<div class="form-card">', unsafe_allow_html=True)
 
     p1, p2 = st.columns(2, gap="large")
 
@@ -410,6 +476,8 @@ elif st.session_state.page == "prediction":
     with b2:
         reset_btn = st.button("Reset")
 
+    st.markdown('</div>', unsafe_allow_html=True)
+
     if reset_btn:
         st.rerun()
 
@@ -455,3 +523,9 @@ elif st.session_state.page == "prediction":
 
             except Exception:
                 st.error("Prediction failed. Please check whether model.pkl matches these input features.")
+
+    st.markdown("""
+    <div class="footer-box">
+        Built with Streamlit and machine learning for credit risk decision support.
+    </div>
+    """, unsafe_allow_html=True)
