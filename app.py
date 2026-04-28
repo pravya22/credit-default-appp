@@ -283,4 +283,3 @@ elif page == "🔍 Prediction":
 
 # ---------- FOOTER ----------
 st.markdown("---")
-st.markdown("Made with ❤️ using Machine Learning & Streamlit")
