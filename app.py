@@ -144,42 +144,65 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 20px;
-    padding: 14px 18px;
-    margin-bottom: 28px;
+    padding: 12px 18px;
+    margin-bottom: 24px;
     backdrop-filter: blur(10px);
 }
 
 .header-title {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 800;
     margin: 0;
     line-height: 1.2;
     color: white;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .hero {
     text-align: center;
-    padding: 56px 38px;
+    padding: 48px 34px;
     border-radius: 24px;
     background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
     backdrop-filter: blur(14px);
     border: 1px solid rgba(255,255,255,0.08);
-    margin-top: 10px;
-    margin-bottom: 22px;
+    margin-top: 8px;
+    margin-bottom: 20px;
 }
 
 .hero h1 {
-    font-size: 44px;
-    margin-bottom: 12px;
+    font-size: 40px;
+    margin-bottom: 10px;
 }
 
 .hero p {
     color: #cbd5e1;
-    font-size: 17px;
-    max-width: 860px;
+    font-size: 16px;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.hero-small {
+    text-align: center;
+    padding: 34px 26px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-top: 8px;
+    margin-bottom: 18px;
+}
+
+.hero-small h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.hero-small p {
+    color: #cbd5e1;
+    font-size: 15px;
+    max-width: 700px;
     margin: 0 auto;
 }
 
@@ -343,6 +366,14 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     .hero h1 {
         font-size: 30px;
     }
+
+    .hero-small {
+        padding: 26px 18px;
+    }
+
+    .hero-small h1 {
+        font-size: 24px;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -350,12 +381,18 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 # ---------------- HEADER ----------------
 st.markdown('<div class="header-bar">', unsafe_allow_html=True)
 
-col1, col2 = st.columns([7, 1], gap="large")
+title_col, action1_col, action2_col = st.columns([6, 1, 1], gap="small")
 
-with col1:
+with title_col:
     st.markdown('<div class="header-title">💳 Credit Risk Intelligence</div>', unsafe_allow_html=True)
 
-with col2:
+with action1_col:
+    if st.session_state.page == "prediction":
+        if st.button("← Back"):
+            st.session_state.page = "home"
+            st.rerun()
+
+with action2_col:
     if st.button("Logout"):
         st.session_state.user_name = None
         st.session_state.page = "home"
@@ -511,17 +548,11 @@ if st.session_state.page == "home":
 elif st.session_state.page == "prediction":
 
     st.markdown("""
-    <div class="hero">
+    <div class="hero-small">
         <h1>🔍 Credit Risk Prediction</h1>
         <p>Enter applicant financial details to estimate the probability of default and classify the risk profile.</p>
     </div>
     """, unsafe_allow_html=True)
-
-    top1, top2, top3 = st.columns([1, 1, 4], gap="medium")
-    with top1:
-        if st.button("← Back"):
-            st.session_state.page = "home"
-            st.rerun()
 
     st.markdown('<div class="form-card">', unsafe_allow_html=True)
     st.markdown("### Applicant Details")
