@@ -4,7 +4,10 @@ import pickle
 
 # ---------- LOAD ----------
 model = pickle.load(open("model.pkl", "rb"))
-data = pd.read_csv(r"C:\ML_Projects\Credit_Default_Project\datasets\cs-training.csv")  # 🔁 change filename if needed
+
+# ✅ FIXED DATASET PATH
+data = pd.read_csv("cs-training.csv")
+data = data.drop(columns=["Unnamed: 0"], errors="ignore")
 
 st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layout="wide")
 
@@ -15,7 +18,7 @@ if "user_name" not in st.session_state:
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# ---------- WELCOME (UNCHANGED) ----------
+# ---------- WELCOME (DO NOT TOUCH) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -163,12 +166,23 @@ elif page == "📊 Dashboard":
 
     st.markdown("---")
 
+    st.markdown("### ⚠️ Top Risk Users")
     st.dataframe(df.sort_values("NumberOfTimes90DaysLate", ascending=False).head(5))
 
+    # LIVE DATA
     if not hist_df.empty:
         st.markdown("### 🔥 Live Predictions")
         st.dataframe(hist_df.tail(5))
         st.line_chart(hist_df["Risk"])
+
+    # INSIGHTS
+    st.markdown("### 🧠 Insights")
+    st.success(f"""
+    • Most users fall under {df["RiskCategory"].mode()[0]} category  
+    • Average income is ₹{int(df['MonthlyIncome'].mean())}  
+    • High risk users are {(df['RiskCategory']=='High').mean()*100:.1f}%  
+    • Live predictions updating in real-time  
+    """)
 
 # ---------- PREDICTION (UNCHANGED + CONNECTED) ----------
 elif page == "🔍 Prediction":
@@ -196,6 +210,7 @@ elif page == "🔍 Prediction":
 
         prob = model.predict_proba(input_df)[0][1]
 
+        # 🔥 STORE FOR DASHBOARD
         st.session_state.history.append({
             "DebtRatio": debt,
             "Income": income,
