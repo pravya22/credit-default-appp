@@ -17,54 +17,38 @@ if st.session_state.user_name is None:
 
     st.markdown("""
     <style>
-    .stApp { background-color: black; }
-
-    .center-box {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        height: 100vh;
-        padding-top: 100px;
-        color: white;
-        text-align: center;
+    .stApp {
+        background-color: black;
     }
 
-    /* Glow Title */
+    /* CENTER EVERYTHING PERFECTLY */
+    .center-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -55%);
+        text-align: center;
+        color: white;
+    }
+
     .title {
-        font-size: 56px;
+        font-size: 58px;
         font-weight: 800;
         color: white;
-        text-shadow: 0 0 10px rgba(0,255,255,0.7),
-                     0 0 20px rgba(0,255,255,0.5),
-                     0 0 30px rgba(0,255,255,0.3);
+        text-shadow: 0 0 12px rgba(0,255,255,0.7),
+                     0 0 25px rgba(0,255,255,0.5);
         margin-bottom: 10px;
     }
 
-    /* Typing Subtitle */
     .subtitle {
         color: #aaa;
         font-size: 18px;
-        border-right: 2px solid #aaa;
-        white-space: nowrap;
-        overflow: hidden;
-        width: 0;
-        animation: typing 3s steps(30, end) forwards, blink 0.7s infinite;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
 
-    @keyframes typing {
-        from { width: 0 }
-        to { width: 320px }
-    }
-
-    @keyframes blink {
-        50% { border-color: transparent }
-    }
-
-    /* Input box centered */
+    /* Input styling */
     div[data-baseweb="input"] {
-        width: 300px;
+        width: 280px;
         margin: auto;
         border-radius: 12px !important;
     }
@@ -76,39 +60,31 @@ if st.session_state.user_name is None:
         color: white;
         font-weight: bold;
         border: none;
-        padding: 10px 20px;
+        padding: 8px 18px;
         margin-top: 10px;
     }
 
     .stButton>button:hover {
-        box-shadow: 0 0 15px rgba(0, 198, 255, 0.8);
+        box-shadow: 0 0 12px rgba(0, 198, 255, 0.8);
         transform: scale(1.05);
     }
     </style>
     """, unsafe_allow_html=True)
 
-    # Title + subtitle
-    st.markdown("""
-    <div class="center-box">
-        <div class="title">💳 Credit Risk Intelligence</div>
-        <div class="subtitle">Welcome to AI-powered risk analysis</div>
-    </div>
-    """, unsafe_allow_html=True)
+    # 👇 ONE PERFECT CENTER BLOCK
+    st.markdown('<div class="center-box">', unsafe_allow_html=True)
 
-    # 👇 INPUT EXACTLY BELOW TITLE
-    st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+    st.markdown('<div class="title">💳 Credit Risk Intelligence</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">Welcome to AI-powered risk analysis</div>', unsafe_allow_html=True)
 
-    name = st.text_input(
-        "",
-        placeholder="Enter your name"
-    )
+    name = st.text_input("", placeholder="Enter your name")
 
     if st.button("Enter"):
         if name.strip() != "":
             st.session_state.user_name = name
             st.rerun()
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.stop()
 
@@ -119,9 +95,11 @@ st.markdown("""
     background: linear-gradient(135deg, #020617, #0f172a);
     color: white;
 }
+
 [data-testid="stSidebar"] {
     background: #020617;
 }
+
 .card {
     background: rgba(255,255,255,0.05);
     padding: 25px;
@@ -155,12 +133,12 @@ if page == "🏠 Home":
 
 # ---------- DASHBOARD ----------
 elif page == "📊 Dashboard":
-    st.title("Dashboard")
+    st.title("📊 Dashboard")
 
 # ---------- PREDICTION ----------
 elif page == "🔍 Prediction":
 
-    st.title("Credit Risk Prediction")
+    st.title("🔍 Credit Risk Prediction")
 
     col1, col2 = st.columns(2)
 
@@ -169,7 +147,7 @@ elif page == "🔍 Prediction":
         income = st.number_input("Monthly Income", min_value=0.0, value=5000.0)
 
     with col2:
-        late = st.number_input("Late Payments", min_value=0, value=0)
+        late = st.number_input("Late Payments (90 days)", min_value=0, value=0)
         util = st.number_input("Credit Utilization", min_value=0.0, value=0.3)
 
     input_df = pd.DataFrame([{
@@ -183,6 +161,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
+        # ⚠️ SAME LOGIC (UNCHANGED)
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
@@ -195,7 +174,18 @@ elif page == "🔍 Prediction":
 
 # ---------- ABOUT ----------
 elif page == "ℹ️ About":
-    st.title("About")
+    st.title("ℹ️ About")
+    st.write("""
+    This app predicts loan default risk using Machine Learning.
+
+    Model: XGBoost  
+
+    Inputs:
+    - Debt Ratio  
+    - Monthly Income  
+    - Late Payments  
+    - Credit Utilization  
+    """)
 
 # ---------- FOOTER ----------
 st.markdown("---")
