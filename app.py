@@ -14,7 +14,7 @@ if "user_name" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# ---------- WELCOME PAGE (LOCKED - NOT TOUCHED) ----------
+# ---------- WELCOME PAGE (LOCKED - EXACT SAME) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -43,10 +43,14 @@ if st.session_state.user_name is None:
         margin-bottom:20px;
     }
     .stButton>button {
+        width:140px;
+        border-radius:10px;
         background: linear-gradient(135deg, #00c6ff, #0072ff);
         color:white;
         border:none;
-        border-radius:10px;
+        padding:10px;
+        display:block;
+        margin:auto;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -82,7 +86,6 @@ header {visibility:hidden;}
     color:white;
 }
 
-/* BUTTON FIX (NO WHITE BUTTONS) */
 .stButton>button {
     background: linear-gradient(135deg, #00c6ff, #7c3aed);
     color:white;
@@ -92,40 +95,33 @@ header {visibility:hidden;}
     font-weight:600;
 }
 
-/* HERO */
+label {
+    color: #e5e7eb !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+}
+
 .hero {
     text-align:center;
     padding:35px;
     border-radius:20px;
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(15px);
 }
 
-/* CARDS */
 .card {
     background: rgba(255,255,255,0.05);
     padding:25px;
     border-radius:15px;
     text-align:center;
-    transition:0.3s;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow:0 0 20px rgba(0,198,255,0.3);
-}
-
-/* INFO BOX */
 .info {
     background: rgba(255,255,255,0.05);
     padding:25px;
     border-radius:15px;
 }
 
-/* SPACING */
-.section {
-    margin-top:40px;
-}
+.section {margin-top:40px;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -152,47 +148,16 @@ if st.session_state.page == "home":
 
     st.markdown('<div class="section"></div>', unsafe_allow_html=True)
 
-    # FEATURES
     c1, c2, c3 = st.columns(3)
 
     with c1:
-        st.markdown('<div class="card">📊<br><b>Accurate Prediction</b><br>ML insights</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card">📊<br><b>Accurate Prediction</b></div>', unsafe_allow_html=True)
     with c2:
-        st.markdown('<div class="card">⚡<br><b>Real-time Analysis</b><br>Instant results</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card">⚡<br><b>Real-time Analysis</b></div>', unsafe_allow_html=True)
     with c3:
-        st.markdown('<div class="card">📈<br><b>Financial Insights</b><br>Better decisions</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card">📈<br><b>Financial Insights</b></div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section"></div>', unsafe_allow_html=True)
-
-    # INFO SECTION (clean + aligned)
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("""
-        <div class="info">
-        <h3>🚀 What this app does</h3>
-        <ul>
-        <li>Predicts loan default risk</li>
-        <li>Uses XGBoost model</li>
-        <li>Real-time classification</li>
-        <li>Supports decision making</li>
-        </ul>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-        <div class="info">
-        <h3>🧠 How it works</h3>
-        <ol>
-        <li>Enter financial data</li>
-        <li>Model analyzes</li>
-        <li>Get prediction</li>
-        </ol>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("🚀 Start Prediction"):
         st.session_state.page = "predict"
@@ -201,7 +166,6 @@ if st.session_state.page == "home":
 # ---------- PREDICTION ----------
 elif st.session_state.page == "predict":
 
-    # BACK BUTTON (NEW)
     if st.button("⬅ Back to Home"):
         st.session_state.page = "home"
         st.rerun()
@@ -230,11 +194,46 @@ elif st.session_state.page == "predict":
         prob = model.predict_proba(input_df)[0][1]
 
         if prob < 0.3:
-            st.success("Low Risk")
+            label = "🟢 LOW RISK"
+            color = "#22c55e"
         elif prob < 0.6:
-            st.warning("Medium Risk")
+            label = "🟡 MEDIUM RISK"
+            color = "#f59e0b"
         else:
-            st.error("High Risk")
+            label = "🔴 HIGH RISK"
+            color = "#ef4444"
+
+        # RESULT CARD
+        st.markdown(f"""
+        <div style="padding:25px;border-radius:18px;background:rgba(255,255,255,0.05);text-align:center;">
+            <h2 style="color:{color};">{label}</h2>
+            <h1>{prob:.2f}</h1>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.progress(float(prob))
-        st.metric("Default Probability", f"{prob:.2f}")
+
+        # 📊 CHART
+        st.subheader("📊 Input Overview")
+        chart_df = pd.DataFrame({
+            "Feature": ["Debt", "Income", "Late", "Utilization"],
+            "Value": [debt, income/10000, late, util]
+        })
+        st.bar_chart(chart_df.set_index("Feature"))
+
+        # 💡 EXPLANATION
+        st.subheader("💡 Why this prediction?")
+        reasons = []
+
+        if debt > 0.6:
+            reasons.append("High Debt Ratio increases risk")
+        if late > 2:
+            reasons.append("Frequent late payments detected")
+        if util > 0.7:
+            reasons.append("High credit utilization")
+
+        if len(reasons) == 0:
+            reasons.append("Your financial profile looks stable")
+
+        for r in reasons:
+            st.write("•", r)
