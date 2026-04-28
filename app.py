@@ -35,21 +35,26 @@ if st.session_state.user_name is None:
 
     .glass {
         background: rgba(255,255,255,0.05);
-        padding: 32px;
+        padding: 32px 28px;
         border-radius: 24px;
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255,255,255,0.10);
         text-align: center;
         margin-top: 90px;
+        width: 100%;
     }
 
     .title {
-        font-size: 42px;
+        font-size: clamp(28px, 3vw, 38px);
         font-weight: 800;
         color: white;
-        text-shadow: 0 0 15px rgba(0,255,255,0.7),
-                     0 0 30px rgba(0,255,255,0.35);
-        white-space: nowrap;
+        text-shadow: 0 0 12px rgba(0,255,255,0.6),
+                     0 0 24px rgba(0,255,255,0.25);
+        white-space: normal;
+        line-height: 1.2;
+        word-break: break-word;
+        text-align: center;
+        max-width: 100%;
     }
 
     .subtitle {
@@ -95,6 +100,17 @@ if st.session_state.user_name is None:
         border: 1px solid rgba(255,255,255,0.40) !important;
         transform: translateY(-2px);
         box-shadow: 0 0 22px rgba(59, 130, 246, 0.50);
+    }
+
+    @media (max-width: 768px) {
+        .glass {
+            margin-top: 60px;
+            padding: 26px 18px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+        }
     }
     </style>
     """, unsafe_allow_html=True)
@@ -350,7 +366,6 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
 }
 
-/* Number input visibility fix */
 .stNumberInput > div > div > input {
     background-color: #f8fafc !important;
     color: #111827 !important;
