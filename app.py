@@ -12,7 +12,7 @@ st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layo
 if "user_name" not in st.session_state:
     st.session_state.user_name = None
 
-# ---------- WELCOME SCREEN (DO NOT TOUCH - FINAL) ----------
+# ---------- WELCOME SCREEN (UNCHANGED) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -73,7 +73,7 @@ if st.session_state.user_name is None:
         </div>
         """, unsafe_allow_html=True)
 
-        c1, c2, c3 = st.columns([1,1.5,1])
+        c1, c2, c3 = st.columns([1,2,1])
         with c2:
             name = st.text_input("", placeholder="Enter your name")
 
@@ -86,69 +86,63 @@ if st.session_state.user_name is None:
 
     st.stop()
 
-# ---------- GLOBAL DARK UI ----------
+# ---------- GLOBAL UI ----------
 st.markdown("""
 <style>
 
+/* REMOVE HEADER */
+header {visibility: hidden;}
+.block-container {padding-top: 0rem;}
+
+/* BACKGROUND */
 [data-testid="stAppViewContainer"] {
     background: linear-gradient(135deg, #020617, #0f172a);
     color: white;
 }
 
-/* SIDEBAR FIX */
+/* SIDEBAR */
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #020617, #0f172a);
-    border-right: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(180deg, #020617, #020617);
+    padding-top:20px;
 }
 
-[data-testid="stSidebar"] * {
-    color: #e5e7eb !important;
+section[data-testid="stSidebar"] > div {
+    padding:20px;
 }
 
-/* Clean radio buttons */
+/* NAV ITEMS */
 div[role="radiogroup"] > label {
-    padding: 10px 12px;
-    border-radius: 10px;
-    margin-bottom: 6px;
-    transition: 0.3s;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:8px;
+    transition:0.3s;
 }
 
 div[role="radiogroup"] > label:hover {
-    background: rgba(0,255,255,0.08);
+    background: rgba(0,198,255,0.1);
 }
 
-div[role="radiogroup"] > label[data-selected="true"] {
-    background: rgba(0,255,255,0.15);
-    box-shadow: 0 0 10px rgba(0,255,255,0.4);
+/* LOGOUT BUTTON */
+.stSidebar button {
+    border-radius:10px;
+    background:#111827;
+    color:white;
+    border:1px solid #333;
 }
 
-div[role="radiogroup"] input {
-    display: none;
-}
-
-/* Cards */
+/* CARD UI */
 .card {
     background: rgba(255,255,255,0.05);
     padding:20px;
     border-radius:15px;
-    backdrop-filter: blur(10px);
-    border:1px solid rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.08);
     text-align:center;
     transition:0.3s;
 }
 
 .card:hover {
-    box-shadow: 0 0 20px rgba(0,255,255,0.4);
-}
-
-/* Pills */
-.pill {
-    display:inline-block;
-    padding:8px 15px;
-    margin:5px;
-    border-radius:20px;
-    background: rgba(0,255,255,0.1);
-    border:1px solid rgba(0,255,255,0.3);
+    transform: translateY(-5px);
+    box-shadow:0 0 20px rgba(0,198,255,0.2);
 }
 
 </style>
@@ -174,49 +168,47 @@ background:rgba(255,255,255,0.05); border-radius:10px;">
 # ---------- HOME ----------
 if page == "🏠 Home":
 
-    st.markdown(f"""
-    <div style="text-align:center; margin-top:30px;">
-        <h1>👋 Hello, {st.session_state.user_name}</h1>
-        <p style="color:#aaa;">Welcome to Credit Risk Intelligence Platform</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"# 👋 Welcome, {st.session_state.user_name}")
+    st.markdown("### Credit Risk Intelligence Platform")
 
-    st.markdown("###")
+    st.markdown("---")
 
+    # WHAT APP DOES
+    st.subheader("🚀 What this app does")
+    st.markdown("""
+- Predicts loan default risk using Machine Learning  
+- Uses XGBoost model for high accuracy  
+- Provides real-time risk classification  
+- Helps financial decision making  
+""")
+
+    st.markdown("---")
+
+    # FEATURES CARDS
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown("<div class='card'>📊<br><b>Predict Risk</b><br><small>Accurate loan default prediction</small></div>", unsafe_allow_html=True)
+        st.markdown('<div class="card">📊<br><b>Accurate Prediction</b><br>ML powered insights</div>', unsafe_allow_html=True)
 
     with col2:
-        st.markdown("<div class='card'>⚡<br><b>Real-time Analysis</b><br><small>Instant classification</small></div>", unsafe_allow_html=True)
+        st.markdown('<div class="card">⚡<br><b>Real-time Analysis</b><br>Instant results</div>', unsafe_allow_html=True)
 
     with col3:
-        st.markdown("<div class='card'>🧠<br><b>ML Powered</b><br><small>XGBoost model</small></div>", unsafe_allow_html=True)
+        st.markdown('<div class="card">📈<br><b>Financial Insights</b><br>Better decisions</div>', unsafe_allow_html=True)
 
-    st.markdown("###")
+    st.markdown("---")
 
-    st.markdown("<h3 style='text-align:center;'>📊 Key Inputs</h3>", unsafe_allow_html=True)
-
+    # HOW IT WORKS
+    st.subheader("🧠 How it works")
     st.markdown("""
-    <div style="text-align:center;">
-        <span class="pill">Debt Ratio</span>
-        <span class="pill">Monthly Income</span>
-        <span class="pill">Late Payments</span>
-        <span class="pill">Credit Utilization</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("###")
-
-    c1, c2, c3 = st.columns([1,1,1])
-    with c2:
-        if st.button("🚀 Start Prediction"):
-            st.rerun()
+1. Enter financial details  
+2. Model analyzes risk factors  
+3. Get instant risk prediction  
+""")
 
 # ---------- DASHBOARD ----------
 elif page == "📊 Dashboard":
-    st.title("📊 Dashboard")
+    st.title("📊 Dashboard (Coming Soon)")
 
 # ---------- PREDICTION (UNCHANGED) ----------
 elif page == "🔍 Prediction":
@@ -257,4 +249,3 @@ elif page == "🔍 Prediction":
 # ---------- FOOTER ----------
 st.markdown("---")
 st.markdown("Made with ❤️ using Machine Learning & Streamlit")
-   
