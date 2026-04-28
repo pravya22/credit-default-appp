@@ -35,25 +35,25 @@ if st.session_state.user_name is None:
 
     .glass {
         background: rgba(255,255,255,0.05);
-        padding: 25px;
-        border-radius: 20px;
+        padding: 28px;
+        border-radius: 22px;
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.10);
         text-align: center;
-        margin-top: 80px;
+        margin-top: 90px;
     }
 
     .title {
-        font-size: 40px;
+        font-size: 42px;
         font-weight: 800;
         color: white;
         text-shadow: 0 0 15px rgba(0,255,255,0.7),
-                     0 0 30px rgba(0,255,255,0.4);
+                     0 0 30px rgba(0,255,255,0.35);
         white-space: nowrap;
     }
 
     .subtitle {
-        color: #aaa;
+        color: #b8c1cc;
         font-size: 15px;
         margin-top: 10px;
         margin-bottom: 20px;
@@ -65,8 +65,8 @@ if st.session_state.user_name is None:
     }
 
     .stButton>button {
-        width: 140px;
-        border-radius: 10px;
+        width: 150px;
+        border-radius: 12px;
         background: linear-gradient(135deg, #00c6ff, #0072ff);
         color: white;
         border: none;
@@ -78,7 +78,7 @@ if st.session_state.user_name is None:
     </style>
     """, unsafe_allow_html=True)
 
-    left, center, right = st.columns([1, 2, 1])
+    left, center, right = st.columns([1, 2, 1], gap="large")
 
     with center:
         st.markdown("""
@@ -88,12 +88,12 @@ if st.session_state.user_name is None:
         </div>
         """, unsafe_allow_html=True)
 
-        c1, c2, c3 = st.columns([1, 2, 1])
-        with c2:
+        a, b, c = st.columns([1, 2, 1], gap="medium")
+        with b:
             name = st.text_input("", placeholder="Enter your name")
 
-        c4, c5, c6 = st.columns([1, 1, 1])
-        with c5:
+        d, e, f = st.columns([1, 1, 1], gap="medium")
+        with e:
             if st.button("Enter"):
                 if name.strip():
                     st.session_state.user_name = name.strip()
@@ -104,7 +104,7 @@ if st.session_state.user_name is None:
 
     st.stop()
 
-# ---------------- GLOBAL DARK UI ----------------
+# ---------------- GLOBAL UI ----------------
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
@@ -112,66 +112,90 @@ st.markdown("""
     color: white;
 }
 
-/* Text */
-h1, h2, h3, h4, h5, h6, p, label, li, div {
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     color: white;
 }
 
-/* Header title spacing */
-.block-container {
-    padding-top: 2rem;
-}
-
-/* Hero */
 .hero {
     text-align: center;
-    padding: 35px;
-    border-radius: 20px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(15px);
+    padding: 48px 34px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
+    backdrop-filter: blur(14px);
     border: 1px solid rgba(255,255,255,0.08);
-    margin-bottom: 20px;
+    margin-bottom: 14px;
 }
 
-/* Cards */
-.card {
+.hero h1 {
+    font-size: 44px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #cbd5e1;
+    font-size: 17px;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.metric-card {
     background: rgba(255,255,255,0.05);
-    padding: 25px;
+    padding: 22px;
     border-radius: 18px;
     border: 1px solid rgba(255,255,255,0.08);
-    text-align: center;
+    text-align: left;
     min-height: 150px;
 }
 
-/* Info cards */
-.info-card {
+.metric-card h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.metric-card p {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.section-card {
     background: rgba(255,255,255,0.05);
-    padding: 25px;
+    padding: 26px;
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.08);
-    min-height: 230px;
+    min-height: 240px;
 }
 
-/* Full width note */
+.section-card h3 {
+    margin-bottom: 14px;
+    font-size: 22px;
+}
+
+.section-card ul,
+.section-card ol {
+    padding-left: 20px;
+    color: #dbe4ee;
+    line-height: 1.8;
+}
+
 .note-card {
     background: rgba(255,255,255,0.05);
-    padding: 20px 25px;
+    padding: 24px 28px;
     border-radius: 18px;
     border: 1px solid rgba(255,255,255,0.08);
-    margin-top: 15px;
+    margin-top: 8px;
 }
 
-/* Buttons */
-.stButton>button {
-    border-radius: 12px;
-    background: linear-gradient(135deg, #00c6ff, #7c3aed);
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    font-weight: 600;
+.note-card p {
+    color: #cbd5e1;
+    line-height: 1.7;
 }
 
-/* Result box */
 .result-box {
     text-align: center;
     padding: 25px;
@@ -181,24 +205,22 @@ h1, h2, h3, h4, h5, h6, p, label, li, div {
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Colors */
 .low { color: #22c55e; }
 .medium { color: #facc15; }
 .high { color: #ef4444; }
 
-/* Small muted text */
-.muted {
-    color: #cbd5e1 !important;
+.subtle {
+    color: #94a3b8 !important;
     font-size: 14px;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------- HEADER ----------------
-col1, col2 = st.columns([6, 1])
-with col1:
+h1, h2 = st.columns([6, 1], gap="medium")
+with h1:
     st.markdown("### 💳 Credit Risk Intelligence")
-with col2:
+with h2:
     if st.button("Logout"):
         st.session_state.user_name = None
         st.session_state.page = "home"
@@ -210,87 +232,79 @@ if st.session_state.page == "home":
     st.markdown(f"""
     <div class="hero">
         <h1>👋 Welcome, {st.session_state.user_name}</h1>
-        <p>Analyze applicant financial details, predict loan default probability, and support smarter credit decisions in real time.</p>
+        <p>Analyze applicant financial data, estimate default probability, and support smarter lending decisions with a faster and more consistent credit-risk workflow.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns(3)
+    st.caption("Designed for quick loan-risk screening and decision support.")
 
-    with col1:
-        st.markdown("""
-        <div class="card">
-            <h3>📊 Accurate Prediction</h3>
-            <p class="muted">Machine learning based risk classification using applicant financial data.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-        <div class="card">
-            <h3>⚡ Real-Time Analysis</h3>
-            <p class="muted">Instantly generate risk probability and classify the applicant profile.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col3:
-        st.markdown("""
-        <div class="card">
-            <h3>📈 Better Financial Insights</h3>
-            <p class="muted">Support loan screening decisions with fast and consistent model output.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.write("")
-
-    c1, c2 = st.columns(2)
+    # Row 1: value cards
+    c1, c2, c3 = st.columns(3, gap="medium")
 
     with c1:
         st.markdown("""
-        <div class="info-card">
-            <h3>🚀 What this app does</h3>
-            <ul>
-                <li>Predicts loan default risk</li>
-                <li>Uses a trained machine learning model</li>
-                <li>Provides probability-based output</li>
-                <li>Helps support credit evaluation</li>
-            </ul>
+        <div class="metric-card">
+            <h3>📊 Accurate Prediction</h3>
+            <p>Uses machine learning to classify risk from core financial indicators and generate a probability-based result.</p>
         </div>
         """, unsafe_allow_html=True)
 
     with c2:
         st.markdown("""
-        <div class="info-card">
+        <div class="metric-card">
+            <h3>⚡ Real-Time Analysis</h3>
+            <p>Generate instant results after entering applicant details without requiring long manual review steps.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c3:
+        st.markdown("""
+        <div class="metric-card">
+            <h3>📈 Better Decision Support</h3>
+            <p>Helps identify risky profiles quickly and supports more structured financial evaluation.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+
+    # Row 2: explanation
+    c4, c5 = st.columns(2, gap="large")
+
+    with c4:
+        st.markdown("""
+        <div class="section-card">
+            <h3>🚀 What this app does</h3>
+            <ul>
+                <li>Predicts loan default risk</li>
+                <li>Uses a trained machine learning model</li>
+                <li>Generates probability-based classification</li>
+                <li>Supports faster credit evaluation</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c5:
+        st.markdown("""
+        <div class="section-card">
             <h3>🧠 How it works</h3>
             <ol>
-                <li>Enter applicant financial details</li>
-                <li>The model processes the input values</li>
-                <li>Get a risk prediction instantly</li>
-                <li>Review the result for decision support</li>
+                <li>Enter applicant financial information</li>
+                <li>The model processes the input features</li>
+                <li>Risk probability is calculated</li>
+                <li>The profile is labeled as low, medium, or high risk</li>
             </ol>
         </div>
         """, unsafe_allow_html=True)
 
     st.write("")
 
-    c3, c4 = st.columns(2)
+    # Row 3: inputs and benefits
+    c6, c7 = st.columns(2, gap="large")
 
-    with c3:
+    with c6:
         st.markdown("""
-        <div class="info-card">
-            <h3>✨ Key Features</h3>
-            <ul>
-                <li>Instant loan default prediction</li>
-                <li>Probability-based risk scoring</li>
-                <li>Simple and user-friendly design</li>
-                <li>Fast financial decision support</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c4:
-        st.markdown("""
-        <div class="info-card">
-            <h3>📌 Inputs Used for Prediction</h3>
+        <div class="section-card">
+            <h3>📌 Model Inputs</h3>
             <ul>
                 <li>Debt Ratio</li>
                 <li>Monthly Income</li>
@@ -300,17 +314,33 @@ if st.session_state.page == "home":
         </div>
         """, unsafe_allow_html=True)
 
+    with c7:
+        st.markdown("""
+        <div class="section-card">
+            <h3>✅ Why use this app</h3>
+            <ul>
+                <li>Reduces manual screening effort</li>
+                <li>Improves consistency in early review</li>
+                <li>Surfaces risk signals quickly</li>
+                <li>Supports data-driven lending decisions</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+
+    # Full width note
     st.markdown("""
     <div class="note-card">
         <h3>⚠️ Important Note</h3>
-        <p>This application provides AI-based credit risk insights for decision support. Final loan approval decisions should also include human judgment, policy rules, and additional verification.</p>
+        <p>This application is a decision-support tool. Final credit approval should also consider internal business policy, additional verification, and human judgment.</p>
     </div>
     """, unsafe_allow_html=True)
 
     st.write("")
 
-    c5, c6, c7 = st.columns([2, 1, 2])
-    with c6:
+    x1, x2, x3 = st.columns([2, 1, 2], gap="medium")
+    with x2:
         if st.button("🚀 Start Prediction"):
             st.session_state.page = "prediction"
             st.rerun()
@@ -318,8 +348,8 @@ if st.session_state.page == "home":
 # ---------------- PREDICTION PAGE ----------------
 elif st.session_state.page == "prediction":
 
-    c1, c2 = st.columns([1, 5])
-    with c1:
+    top1, top2 = st.columns([1, 5], gap="medium")
+    with top1:
         if st.button("← Back"):
             st.session_state.page = "home"
             st.rerun()
@@ -327,9 +357,9 @@ elif st.session_state.page == "prediction":
     st.title("🔍 Credit Risk Prediction")
     st.caption("Enter the applicant's financial details below to estimate loan default risk.")
 
-    col1, col2 = st.columns(2)
+    p1, p2 = st.columns(2, gap="large")
 
-    with col1:
+    with p1:
         debt = st.number_input(
             "Debt Ratio",
             min_value=0.0,
@@ -348,7 +378,7 @@ elif st.session_state.page == "prediction":
             format="%.2f"
         )
 
-    with col2:
+    with p2:
         late = st.number_input(
             "Late Payments",
             min_value=0,
@@ -374,12 +404,10 @@ elif st.session_state.page == "prediction":
         "RevolvingUtilizationOfUnsecuredLines": util
     }])
 
-    c3, c4, c5 = st.columns([1, 1, 4])
-
-    with c3:
+    b1, b2, b3 = st.columns([1, 1, 4], gap="medium")
+    with b1:
         predict_btn = st.button("Predict Risk")
-
-    with c4:
+    with b2:
         reset_btn = st.button("Reset")
 
     if reset_btn:
