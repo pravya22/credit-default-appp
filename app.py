@@ -14,7 +14,7 @@ if "user_name" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# ---------- WELCOME PAGE (100% SAME - NOT TOUCHED) ----------
+# ---------- WELCOME SCREEN (ONLY CENTER FIX ADDED) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -54,8 +54,8 @@ if st.session_state.user_name is None:
         color:white;
         border:none;
         padding:10px;
-        margin:auto;
         display:block;
+        margin:auto;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -70,23 +70,27 @@ if st.session_state.user_name is None:
         </div>
         """, unsafe_allow_html=True)
 
-        name = st.text_input("", placeholder="Enter your name")
+        # ✅ CENTERED INPUT
+        c1, c2, c3 = st.columns([1,2,1])
+        with c2:
+            name = st.text_input("", placeholder="Enter your name")
 
-        if st.button("Enter"):
-            if name.strip():
-                st.session_state.user_name = name
-                st.rerun()
+        # ✅ CENTERED BUTTON
+        c4, c5, c6 = st.columns([1,1,1])
+        with c5:
+            if st.button("Enter"):
+                if name.strip():
+                    st.session_state.user_name = name
+                    st.rerun()
 
     st.stop()
 
-# ---------- GLOBAL DARK UI (RESTORE YOUR ORIGINAL LOOK) ----------
+# ---------- GLOBAL DARK UI ----------
 st.markdown("""
 <style>
 
-/* BACKGROUND */
 [data-testid="stAppViewContainer"] {
     background: radial-gradient(circle at top, #020617, #000000 100%);
-    color:white;
 }
 
 /* TEXT */
@@ -94,44 +98,7 @@ h1,h2,h3,h4,h5,p,label {
     color:white !important;
 }
 
-/* HEADER */
-.header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px;
-    background:rgba(255,255,255,0.05);
-    border-radius:10px;
-}
-
-/* HERO */
-.hero {
-    text-align:center;
-    padding:30px;
-    border-radius:20px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(15px);
-    border:1px solid rgba(255,255,255,0.08);
-}
-
-/* CARDS */
-.card {
-    background: rgba(255,255,255,0.05);
-    padding:25px;
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,0.08);
-    text-align:center;
-}
-
-/* INFO CARDS */
-.info-card {
-    background: rgba(255,255,255,0.05);
-    padding:25px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.08);
-}
-
-/* BUTTONS */
+/* BUTTON */
 .stButton>button {
     border-radius:12px;
     background: linear-gradient(135deg, #00c6ff, #7c3aed);
@@ -139,6 +106,19 @@ h1,h2,h3,h4,h5,p,label {
     border:none;
     padding:10px 18px;
     font-weight:600;
+    box-shadow:0 0 12px rgba(0,198,255,0.4);
+}
+
+.stButton>button:hover {
+    transform:scale(1.05);
+}
+
+/* CARDS */
+.hero, .card, .info-card {
+    background: rgba(255,255,255,0.05);
+    border-radius:20px;
+    padding:25px;
+    border:1px solid rgba(255,255,255,0.08);
 }
 
 /* RESULT BOX */
@@ -148,7 +128,6 @@ h1,h2,h3,h4,h5,p,label {
     border-radius:20px;
     margin-top:20px;
     background: rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.1);
 }
 
 /* COLORS */
@@ -169,7 +148,7 @@ with col2:
         st.session_state.page = "home"
         st.rerun()
 
-# ---------- HOME PAGE (RESTORED PROPERLY) ----------
+# ---------- HOME ----------
 if st.session_state.page == "home":
 
     st.markdown(f"""
@@ -225,7 +204,7 @@ if st.session_state.page == "home":
         st.session_state.page = "prediction"
         st.rerun()
 
-# ---------- PREDICTION PAGE ----------
+# ---------- PREDICTION ----------
 elif st.session_state.page == "prediction":
 
     if st.button("← Back to Home"):
