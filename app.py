@@ -21,46 +21,39 @@ if st.session_state.user_name is None:
         background: radial-gradient(circle at center, #0f172a 0%, black 80%);
     }
 
-    .center-box {
-        display:flex;
-        flex-direction:column;
-        justify-content:center;
-        align-items:center;
-        height:80vh;
-    }
-
     .glass {
         background: rgba(255,255,255,0.05);
-        padding:40px;
+        padding:25px;
         border-radius:20px;
         backdrop-filter: blur(12px);
         border:1px solid rgba(255,255,255,0.1);
         text-align:center;
-        width:100%;
     }
 
     .title {
-        font-size:42px;
+        font-size:40px;
         font-weight:800;
         color:white;
         text-shadow: 0 0 15px rgba(0,255,255,0.7),
                      0 0 30px rgba(0,255,255,0.4);
         white-space: nowrap;
-        margin-bottom:10px;
     }
 
     .subtitle {
         color:#aaa;
-        font-size:16px;
-        margin-bottom:25px;
+        font-size:15px;
+        margin-top:10px;
+        margin-bottom:20px;
     }
 
+    /* Center input text */
     .stTextInput>div>div>input {
         text-align:center;
     }
 
+    /* Button style */
     .stButton>button {
-        width:150px;
+        width:140px;
         border-radius:10px;
         background: linear-gradient(135deg, #00c6ff, #0072ff);
         color:white;
@@ -72,28 +65,35 @@ if st.session_state.user_name is None:
 
     .stButton>button:hover {
         box-shadow: 0 0 12px rgba(0,198,255,0.8);
-        transform: scale(1.05);
     }
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="center-box">', unsafe_allow_html=True)
+    # Center layout using columns
+    left, center, right = st.columns([1,2,1])
 
-    st.markdown("""
-    <div class="glass">
-        <div class="title">💳 Credit Risk Intelligence</div>
-        <div class="subtitle">Welcome to AI-powered risk analysis</div>
-    </div>
-    """, unsafe_allow_html=True)
+    with center:
 
-    name = st.text_input("", placeholder="Enter your name")
+        # Title card
+        st.markdown("""
+        <div class="glass">
+            <div class="title">💳 Credit Risk Intelligence</div>
+            <div class="subtitle">Welcome to AI-powered risk analysis</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    if st.button("Enter"):
-        if name.strip():
-            st.session_state.user_name = name
-            st.rerun()
+        # Small centered input
+        c1, c2, c3 = st.columns([1,2,1])
+        with c2:
+            name = st.text_input("", placeholder="Enter your name")
 
-    st.markdown('</div>', unsafe_allow_html=True)
+        # Center button
+        c4, c5, c6 = st.columns([1,1,1])
+        with c5:
+            if st.button("Enter"):
+                if name.strip():
+                    st.session_state.user_name = name
+                    st.rerun()
 
     st.stop()
 
@@ -163,7 +163,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # 🔒 UNTOUCHED LOGIC
+        # 🔒 UNCHANGED LOGIC
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
