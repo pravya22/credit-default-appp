@@ -25,7 +25,7 @@ if st.session_state.user_name is None:
         flex-direction:column;
         align-items:center;
         justify-content:center;
-        padding-top:120px;
+        padding-top:100px;
     }
 
     .glass {
@@ -56,8 +56,6 @@ if st.session_state.user_name is None:
     .stTextInput>div>div>input {
         text-align:center;
         border-radius:10px;
-        width:220px !important;
-        margin:auto;
     }
 
     .stButton>button {
@@ -79,6 +77,7 @@ if st.session_state.user_name is None:
 
     st.markdown("<div class='main-container'>", unsafe_allow_html=True)
 
+    # Title card
     st.markdown("""
         <div class="glass">
             <div class="title">💳 Credit Risk Intelligence</div>
@@ -86,12 +85,18 @@ if st.session_state.user_name is None:
         </div>
     """, unsafe_allow_html=True)
 
-    name = st.text_input("", placeholder="Enter your name")
+    # CENTERED INPUT
+    col1, col2, col3 = st.columns([3,2,3])
+    with col2:
+        name = st.text_input("", placeholder="Enter your name")
 
-    if st.button("Enter"):
-        if name.strip():
-            st.session_state.user_name = name
-            st.rerun()
+    # CENTERED BUTTON
+    col4, col5, col6 = st.columns([3,1,3])
+    with col5:
+        if st.button("Enter"):
+            if name.strip():
+                st.session_state.user_name = name
+                st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -177,7 +182,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # 🔒 SAME LOGIC
+        # SAME LOGIC
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
