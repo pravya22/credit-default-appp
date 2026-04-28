@@ -4,7 +4,7 @@ import pickle
 
 # ---------- LOAD ----------
 model = pickle.load(open("model.pkl", "rb"))
-data = pd.read_csv("your_dataset.csv")  # 🔁 change filename if needed
+data = pd.read_csv(r"C:\ML_Projects\Credit_Default_Project\datasets\cs-training.csv")  # 🔁 change filename if needed
 
 st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layout="wide")
 
