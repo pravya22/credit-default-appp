@@ -21,22 +21,6 @@ if st.session_state.user_name is None:
         background-color: black;
     }
 
-    .title {
-        font-size: 60px;
-        font-weight: 800;
-        color: white;
-        text-align: center;
-        text-shadow: 0 0 15px rgba(0,255,255,0.7),
-                     0 0 30px rgba(0,255,255,0.4);
-    }
-
-    .subtitle {
-        text-align: center;
-        color: #aaa;
-        font-size: 18px;
-        margin-bottom: 20px;
-    }
-
     .stButton>button {
         width: 100%;
         border-radius: 10px;
@@ -53,19 +37,44 @@ if st.session_state.user_name is None:
     </style>
     """, unsafe_allow_html=True)
 
-    # 👇 CENTER FIX (columns method)
+    # 👇 CENTER EVERYTHING
     left, center, right = st.columns([1,2,1])
 
     with center:
-        st.markdown('<div class="title">💳 Credit Risk Intelligence</div>', unsafe_allow_html=True)
-        st.markdown('<div class="subtitle">Welcome to AI-powered risk analysis</div>', unsafe_allow_html=True)
 
+        # ✅ SINGLE LINE TITLE
+        st.markdown("""
+        <div style='text-align:center;
+                    font-size:48px;
+                    font-weight:800;
+                    color:white;
+                    text-shadow: 0 0 15px rgba(0,255,255,0.7),
+                                 0 0 30px rgba(0,255,255,0.4);
+                    white-space: nowrap;'>
+            💳 Credit Risk Intelligence
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Subtitle
+        st.markdown("""
+        <div style='text-align:center;
+                    color:#aaa;
+                    font-size:18px;
+                    margin-bottom:20px;'>
+            Welcome to AI-powered risk analysis
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Input
         name = st.text_input("", placeholder="Enter your name")
 
-        if st.button("Enter"):
-            if name.strip() != "":
-                st.session_state.user_name = name
-                st.rerun()
+        # ✅ CENTER BUTTON
+        b1, b2, b3 = st.columns([1,1,1])
+        with b2:
+            if st.button("Enter"):
+                if name.strip() != "":
+                    st.session_state.user_name = name
+                    st.rerun()
 
     st.stop()
 
@@ -79,13 +88,6 @@ st.markdown("""
 
 [data-testid="stSidebar"] {
     background: #020617;
-}
-
-.card {
-    background: rgba(255,255,255,0.05);
-    padding: 25px;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -142,7 +144,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # ✅ SAME LOGIC (NOT TOUCHED)
+        # ✅ SAME LOGIC (UNCHANGED)
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
