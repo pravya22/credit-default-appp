@@ -21,45 +21,29 @@ if st.session_state.user_name is None:
         background-color: black;
     }
 
-    /* Center everything perfectly */
-    .block-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        text-align: center;
-    }
-
     .title {
         font-size: 60px;
         font-weight: 800;
         color: white;
+        text-align: center;
         text-shadow: 0 0 15px rgba(0,255,255,0.7),
                      0 0 30px rgba(0,255,255,0.4);
-        margin-bottom: 10px;
     }
 
     .subtitle {
+        text-align: center;
         color: #aaa;
         font-size: 18px;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
 
-    /* Input box */
-    div[data-baseweb="input"] {
-        width: 260px;
-        margin: auto;
-    }
-
-    /* Button */
     .stButton>button {
+        width: 100%;
         border-radius: 10px;
         background: linear-gradient(135deg, #00c6ff, #0072ff);
         color: white;
         border: none;
-        padding: 8px 20px;
-        margin-top: 10px;
+        padding: 10px;
     }
 
     .stButton>button:hover {
@@ -69,17 +53,19 @@ if st.session_state.user_name is None:
     </style>
     """, unsafe_allow_html=True)
 
-    # Title + subtitle
-    st.markdown('<div class="title">💳 Credit Risk Intelligence</div>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">Welcome to AI-powered risk analysis</div>', unsafe_allow_html=True)
+    # 👇 CENTER FIX (columns method)
+    left, center, right = st.columns([1,2,1])
 
-    # Input + button (centered)
-    name = st.text_input("", placeholder="Enter your name")
+    with center:
+        st.markdown('<div class="title">💳 Credit Risk Intelligence</div>', unsafe_allow_html=True)
+        st.markdown('<div class="subtitle">Welcome to AI-powered risk analysis</div>', unsafe_allow_html=True)
 
-    if st.button("Enter"):
-        if name.strip() != "":
-            st.session_state.user_name = name
-            st.rerun()
+        name = st.text_input("", placeholder="Enter your name")
+
+        if st.button("Enter"):
+            if name.strip() != "":
+                st.session_state.user_name = name
+                st.rerun()
 
     st.stop()
 
@@ -156,7 +142,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # 🔒 YOUR ORIGINAL LOGIC (UNCHANGED)
+        # ✅ SAME LOGIC (NOT TOUCHED)
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
