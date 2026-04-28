@@ -88,13 +88,9 @@ if st.session_state.user_name is None:
 
     st.stop()
 
-# ---------- GLOBAL UI (UNCHANGED) ----------
+# ---------- GLOBAL DARK UI (RESTORE YOUR ORIGINAL LOOK) ----------
 st.markdown("""
 <style>
-
-/* CLEAN */
-header {visibility:hidden;}
-.block-container {padding-top:1rem;}
 
 /* BACKGROUND */
 [data-testid="stAppViewContainer"] {
@@ -102,39 +98,19 @@ header {visibility:hidden;}
     color:white;
 }
 
-/* SIDEBAR */
-[data-testid="stSidebar"] {
-    background: #020617;
-    padding-top:30px;
+/* TEXT */
+h1,h2,h3,h4,h5,p,label {
+    color:white !important;
 }
 
-/* NAV TITLE */
-section[data-testid="stSidebar"] h2 {
-    color:#00c6ff;
-    font-size:20px;
-    font-weight:700;
-    text-shadow:0 0 12px rgba(0,198,255,0.9);
-}
-
-/* NAV ITEMS */
-div[role="radiogroup"] > label {
-    padding:14px;
-    border-radius:14px;
-    margin-bottom:10px;
-    transition:0.3s;
-}
-
-/* HOVER */
-div[role="radiogroup"] > label:hover {
-    background: rgba(0,198,255,0.15);
-    transform: translateX(6px);
-}
-
-/* ACTIVE */
-div[role="radiogroup"] input:checked + div {
-    background: rgba(0,198,255,0.25);
-    box-shadow:0 0 15px rgba(0,198,255,0.9);
-    border-radius:12px;
+/* HEADER */
+.header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px;
+    background:rgba(255,255,255,0.05);
+    border-radius:10px;
 }
 
 /* HERO */
@@ -147,111 +123,123 @@ div[role="radiogroup"] input:checked + div {
     border:1px solid rgba(255,255,255,0.08);
 }
 
-/* FEATURE CARDS */
+/* CARDS */
 .card {
     background: rgba(255,255,255,0.05);
     padding:25px;
     border-radius:18px;
     border:1px solid rgba(255,255,255,0.08);
     text-align:center;
-    transition:0.3s;
 }
 
 /* INFO CARDS */
 .info-card {
     background: rgba(255,255,255,0.05);
-    padding:28px;
+    padding:25px;
     border-radius:20px;
-    border:1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(15px);
+    border:1px solid rgba(255,255,255,0.08);
 }
 
-/* TEXT */
-ul li, ol li {
-    margin-bottom:12px;
-    line-height:1.6;
-    color:#ddd;
+/* BUTTONS */
+.stButton>button {
+    border-radius:12px;
+    background: linear-gradient(135deg, #00c6ff, #7c3aed);
+    color:white;
+    border:none;
+    padding:10px 18px;
+    font-weight:600;
 }
 
-/* SPACING */
-.section {
-    margin-top:40px;
-}
-
-h1, h2, h3 {
+/* RESULT BOX */
+.result-box {
     text-align:center;
+    padding:25px;
+    border-radius:20px;
+    margin-top:20px;
+    background: rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
 }
+
+/* COLORS */
+.low {color:#22c55e;}
+.medium {color:#facc15;}
+.high {color:#ef4444;}
 
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- SIDEBAR ----------
-st.sidebar.markdown("## 🚀 Navigation")
-page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction"])
-
-if st.sidebar.button("Logout"):
-    st.session_state.user_name = None
-    st.rerun()
-
 # ---------- HEADER ----------
-st.markdown(f"""
-<div style="display:flex; justify-content:space-between; padding:10px;
-background:rgba(255,255,255,0.05); border-radius:10px;">
-<h3>💳 Credit Risk Intelligence</h3>
-<p>👋 Hello, {st.session_state.user_name}</p>
-</div>
-""", unsafe_allow_html=True)
+col1, col2 = st.columns([6,1])
+with col1:
+    st.markdown("### 💳 Credit Risk Intelligence")
+with col2:
+    if st.button("Logout"):
+        st.session_state.user_name = None
+        st.session_state.page = "home"
+        st.rerun()
 
-# ---------- HOME (UNCHANGED) ----------
-if page == "🏠 Home":
+# ---------- HOME PAGE (RESTORED PROPERLY) ----------
+if st.session_state.page == "home":
 
     st.markdown(f"""
     <div class="hero">
         <h1>👋 Welcome, {st.session_state.user_name}</h1>
-        <p style="color:#bbb;">AI-powered platform for credit risk prediction</p>
+        <p>AI-powered platform for credit risk prediction</p>
     </div>
     """, unsafe_allow_html=True)
+
+    st.write("")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown('<div class="card">📊<br><b>Accurate Prediction</b><br>ML powered insights</div>', unsafe_allow_html=True)
-
+        st.markdown('<div class="card">📊<br><b>Accurate Prediction</b><br>ML insights</div>', unsafe_allow_html=True)
     with col2:
         st.markdown('<div class="card">⚡<br><b>Real-time Analysis</b><br>Instant results</div>', unsafe_allow_html=True)
-
     with col3:
         st.markdown('<div class="card">📈<br><b>Financial Insights</b><br>Better decisions</div>', unsafe_allow_html=True)
+
+    st.write("")
 
     col1, col2 = st.columns(2)
 
     with col1:
         st.markdown("""
         <div class="info-card">
-            <h2>🚀 What this app does</h2>
-            <ul>
-                <li>Predicts loan default risk</li>
-                <li>Uses ML model</li>
-                <li>Real-time classification</li>
-                <li>Helps decision making</li>
-            </ul>
+        <h3>🚀 What this app does</h3>
+        <ul>
+        <li>Predicts loan default risk</li>
+        <li>Uses ML model</li>
+        <li>Real-time classification</li>
+        <li>Helps decision making</li>
+        </ul>
         </div>
         """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
         <div class="info-card">
-            <h2>🧠 How it works</h2>
-            <ol>
-                <li>Enter financial data</li>
-                <li>Model analyzes</li>
-                <li>Get prediction</li>
-            </ol>
+        <h3>🧠 How it works</h3>
+        <ol>
+        <li>Enter financial data</li>
+        <li>Model analyzes</li>
+        <li>Get prediction</li>
+        </ol>
         </div>
         """, unsafe_allow_html=True)
 
-# ---------- PREDICTION (UNCHANGED) ----------
-elif page == "🔍 Prediction":
+    st.write("")
+
+    if st.button("🚀 Start Prediction"):
+        st.session_state.page = "prediction"
+        st.rerun()
+
+# ---------- PREDICTION PAGE ----------
+elif st.session_state.page == "prediction":
+
+    if st.button("← Back to Home"):
+        st.session_state.page = "home"
+        st.rerun()
 
     st.title("🔍 Credit Risk Prediction")
 
@@ -277,11 +265,20 @@ elif page == "🔍 Prediction":
         probability = model.predict_proba(input_df)[0][1]
 
         if probability < 0.3:
-            st.success("Low Risk")
+            risk = "LOW RISK"
+            cls = "low"
         elif probability < 0.6:
-            st.warning("Medium Risk")
+            risk = "MEDIUM RISK"
+            cls = "medium"
         else:
-            st.error("High Risk")
+            risk = "HIGH RISK"
+            cls = "high"
+
+        st.markdown(f"""
+        <div class="result-box">
+            <h2 class="{cls}">{risk}</h2>
+            <h1>{probability:.2f}</h1>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.progress(float(probability))
-        st.metric("Default Probability", f"{probability:.2f}")
