@@ -10,189 +10,182 @@ st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layo
 
 # ---------- SESSION ----------
 if "user_name" not in st.session_state:
-    st.session_state.user_name = None
-
-# ---------- WELCOME SCREEN ----------
-if st.session_state.user_name is None:
-
-    st.markdown("""
-    <style>
-    .stApp {
-        background: radial-gradient(circle at center, #0f172a 0%, black 80%);
-    }
-
-    .center-box {
-        display:flex;
-        flex-direction:column;
-        justify-content:center;
-        align-items:center;
-        height:80vh;
-    }
-
-    .glass {
-        background: rgba(255,255,255,0.05);
-        padding:40px;
-        border-radius:20px;
-        backdrop-filter: blur(12px);
-        border:1px solid rgba(255,255,255,0.1);
-        text-align:center;
-        width:100%;
-    }
-
-    .title {
-        font-size:42px;
-        font-weight:800;
-        color:white;
-        text-shadow: 0 0 15px rgba(0,255,255,0.7),
-                     0 0 30px rgba(0,255,255,0.4);
-        white-space: nowrap;
-        margin-bottom:10px;
-    }
-
-    .subtitle {
-        color:#aaa;
-        font-size:16px;
-        margin-bottom:25px;
-    }
-
-    .stTextInput>div>div>input {
-        text-align:center;
-    }
-
-    .stButton>button {
-        width:150px;
-        border-radius:10px;
-        background: linear-gradient(135deg, #00c6ff, #0072ff);
-        color:white;
-        border:none;
-        padding:10px;
-        display:block;
-        margin:auto;
-    }
-
-    .stButton>button:hover {
-        box-shadow: 0 0 12px rgba(0,198,255,0.8);
-        transform: scale(1.05);
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="center-box">', unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="glass">
-        <div class="title">💳 Credit Risk Intelligence</div>
-        <div class="subtitle">Welcome to AI-powered risk analysis</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    name = st.text_input("", placeholder="Enter your name")
-
-    if st.button("Enter"):
-        if name.strip():
-            st.session_state.user_name = name
-            st.rerun()
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    st.stop()
+    st.session_state.user_name = ""
 
 # ---------- DARK UI ----------
 st.markdown("""
 <style>
-[data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #020617, #0f172a);
-    color: white;
+.stApp {
+    background: radial-gradient(circle at center, #0f172a 0%, black 80%);
 }
 
-[data-testid="stSidebar"] {
-    background: #020617;
+/* Title */
+.title {
+    font-size: 48px;
+    font-weight: 800;
+    text-align: center;
+    text-shadow: 0 0 15px rgba(0,255,255,0.6);
+    white-space: nowrap;
+}
+
+/* Subtitle */
+.subtitle {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+/* Button */
+.stButton>button {
+    border-radius: 10px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    padding: 10px 20px;
+    display: block;
+    margin: auto;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- SIDEBAR ----------
-st.sidebar.markdown("## 📌 Navigation")
-page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction", "ℹ️ About"])
+# ---------- WELCOME PAGE ----------
+if st.session_state.user_name == "":
 
-if st.sidebar.button("Logout"):
-    st.session_state.user_name = None
-    st.rerun()
+    # spacing (instead of height:100vh)
+    st.write("")
+    st.write("")
+    st.write("")
 
-# ---------- HEADER ----------
-st.markdown(f"""
-<div style="display:flex; justify-content:space-between; padding:10px;
-background:rgba(255,255,255,0.05); border-radius:10px;">
-<h3>💳 Credit Risk Intelligence</h3>
-<p>👋 Hello, {st.session_state.user_name}</p>
-</div>
-""", unsafe_allow_html=True)
+    st.markdown('<div class="title">💳 Credit Risk Intelligence</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">Welcome to AI-powered risk analysis</div>', unsafe_allow_html=True)
 
-# ---------- HOME ----------
-if page == "🏠 Home":
-    st.title(f"👋 Hello, {st.session_state.user_name}")
-    st.markdown("### Welcome to your dashboard")
-
-# ---------- DASHBOARD ----------
-elif page == "📊 Dashboard":
-    st.title("📊 Dashboard")
-
-# ---------- PREDICTION ----------
-elif page == "🔍 Prediction":
-
-    st.title("🔍 Credit Risk Prediction")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        debt = st.number_input("Debt Ratio", min_value=0.0, value=0.5)
-        income = st.number_input("Monthly Income", min_value=0.0, value=5000.0)
-
+    # centered input
+    col1, col2, col3 = st.columns([2,3,2])
     with col2:
-        late = st.number_input("Late Payments (90 days)", min_value=0, value=0)
-        util = st.number_input("Credit Utilization", min_value=0.0, value=0.3)
+        name = st.text_input("", placeholder="Enter your name")
 
-    input_df = pd.DataFrame([{
-        "DebtRatio": debt,
-        "MonthlyIncome": income,
-        "NumberOfTimes90DaysLate": late,
-        "RevolvingUtilizationOfUnsecuredLines": util
-    }])
+    # centered button
+    col1, col2, col3 = st.columns([3,2,3])
+    with col2:
+        if st.button("Enter"):
+            if name.strip() != "":
+                st.session_state.user_name = name
+                st.rerun()
 
-    if st.button("Predict Risk"):
+# ---------- MAIN APP ----------
+else:
 
-        probability = model.predict_proba(input_df)[0][1]
+    # Sidebar
+    st.sidebar.markdown("## 📌 Navigation")
+    page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction"])
 
-        # 🔒 UNTOUCHED LOGIC
-        if probability < 0.3:
-            st.success("Low Risk")
-        elif probability < 0.6:
-            st.warning("Medium Risk")
-        else:
-            st.error("High Risk")
+    if st.sidebar.button("Logout"):
+        st.session_state.user_name = ""
+        st.rerun()
 
-        st.progress(float(probability))
-        st.metric("Default Probability", f"{probability:.2f}")
+    # ---------- HOME ----------
+    if page == "🏠 Home":
 
-# ---------- ABOUT ----------
-elif page == "ℹ️ About":
-    st.title("ℹ️ About")
-    st.write("""
-    This app predicts loan default risk using Machine Learning.
+        st.markdown(f"""
+        <div style='display:flex; justify-content:center; margin-top:20px;'>
 
-    Model: XGBoost  
+            <div style="
+                width:900px;
+                background: rgba(255,255,255,0.04);
+                padding:40px;
+                border-radius:18px;
+                backdrop-filter: blur(10px);
+                border:1px solid rgba(255,255,255,0.08);
+            ">
 
-    Inputs:
-    - Debt Ratio  
-    - Monthly Income  
-    - Late Payments  
-    - Credit Utilization  
-    """)
+                <div style="display:flex; justify-content:space-between;">
+                    <h2>💳 Credit Risk Intelligence</h2>
+                    <span style="color:#aaa;">👋 {st.session_state.user_name}</span>
+                </div>
 
-# ---------- FOOTER ----------
-st.markdown("---")
-st.markdown("Made with ❤️ using Machine Learning & Streamlit")
+                <hr style="border:0.5px solid rgba(255,255,255,0.1);">
 
+                <div style="text-align:center;">
+                    <h1>AI Credit Risk Prediction</h1>
+                    <p style="color:#aaa;">
+                        Smart loan default prediction using financial behavior analysis
+                    </p>
+                </div>
 
+                <br>
+
+                <div style="background: rgba(255,255,255,0.03); padding:20px; border-radius:12px;">
+                    <h4>📌 What this app does</h4>
+                    <p style="color:#bbb;">
+                        Predicts whether a customer will default using ML based on financial inputs.
+                    </p>
+                </div>
+
+                <br>
+
+                <div style="display:flex; gap:15px;">
+                    <div style="flex:1; background: rgba(255,255,255,0.03); padding:15px; border-radius:10px; text-align:center;">
+                        🔍<br><b>Prediction</b>
+                    </div>
+
+                    <div style="flex:1; background: rgba(255,255,255,0.03); padding:15px; border-radius:10px; text-align:center;">
+                        📊<br><b>Analysis</b>
+                    </div>
+
+                    <div style="flex:1; background: rgba(255,255,255,0.03); padding:15px; border-radius:10px; text-align:center;">
+                        🧠<br><b>AI Model</b>
+                    </div>
+                </div>
+
+                <br>
+
+                <div style="color:#777; text-align:center;">
+                    Made with ❤️ using Machine Learning
+                </div>
+
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # ---------- DASHBOARD ----------
+    elif page == "📊 Dashboard":
+        st.title("📊 Dashboard")
+        st.info("We’ll design this next.")
+
+    # ---------- PREDICTION ----------
+    elif page == "🔍 Prediction":
+
+        st.title("🔍 Credit Risk Prediction")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            debt = st.number_input("Debt Ratio", min_value=0.0, value=0.5)
+            income = st.number_input("Monthly Income", min_value=0.0, value=5000.0)
+
+        with col2:
+            late = st.number_input("Late Payments (90 days)", min_value=0, value=0)
+            util = st.number_input("Credit Utilization", min_value=0.0, value=0.3)
+
+        input_df = pd.DataFrame([{
+            "DebtRatio": debt,
+            "MonthlyIncome": income,
+            "NumberOfTimes90DaysLate": late,
+            "RevolvingUtilizationOfUnsecuredLines": util
+        }])
+
+        if st.button("Predict Risk"):
+
+            probability = model.predict_proba(input_df)[0][1]
+
+            if probability < 0.3:
+                st.success("✅ Low Risk")
+            elif probability < 0.6:
+                st.warning("⚠️ Medium Risk")
+            else:
+                st.error("🚨 High Risk")
+
+            st.progress(float(probability))
+            st.metric("Default Probability", f"{probability:.2f}")
+       
 
        
