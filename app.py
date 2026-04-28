@@ -61,10 +61,18 @@ if st.session_state.user_name is None:
 
     .stTextInput > div > div > input {
         text-align: center;
-        border-radius: 10px;
-        color: white !important;
-        background-color: rgba(255,255,255,0.06) !important;
-        border: 1px solid rgba(255,255,255,0.18) !important;
+        background-color: #f8fafc !important;
+        color: #111827 !important;
+        -webkit-text-fill-color: #111827 !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        opacity: 1 !important;
+    }
+
+    .stTextInput input::placeholder {
+        color: #6b7280 !important;
+        opacity: 1 !important;
     }
 
     .stButton > button {
@@ -342,10 +350,25 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
 }
 
-.stNumberInput input {
-    color: white !important;
-    background-color: rgba(255,255,255,0.04) !important;
-    border: 1px solid rgba(255,255,255,0.10) !important;
+/* Number input visibility fix */
+.stNumberInput > div > div > input {
+    background-color: #f8fafc !important;
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+
+.stNumberInput input::placeholder {
+    color: #6b7280 !important;
+    opacity: 1 !important;
+}
+
+.stNumberInput button {
+    color: #111827 !important;
+    opacity: 1 !important;
 }
 
 @media (max-width: 768px) {
