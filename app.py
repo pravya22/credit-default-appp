@@ -22,14 +22,15 @@ if st.session_state.user_name is None:
     .center-box {
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;   /* 🔥 moved up */
+        justify-content: flex-start;
         align-items: center;
         height: 100vh;
-        padding-top: 100px;            /* 🔥 controls position */
+        padding-top: 100px;
         color: white;
         text-align: center;
     }
 
+    /* Glow Title */
     .title {
         font-size: 56px;
         font-weight: 800;
@@ -40,6 +41,7 @@ if st.session_state.user_name is None:
         margin-bottom: 10px;
     }
 
+    /* Typing Subtitle */
     .subtitle {
         color: #aaa;
         font-size: 18px;
@@ -48,7 +50,7 @@ if st.session_state.user_name is None:
         overflow: hidden;
         width: 0;
         animation: typing 3s steps(30, end) forwards, blink 0.7s infinite;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
 
     @keyframes typing {
@@ -60,6 +62,14 @@ if st.session_state.user_name is None:
         50% { border-color: transparent }
     }
 
+    /* Input box centered */
+    div[data-baseweb="input"] {
+        width: 300px;
+        margin: auto;
+        border-radius: 12px !important;
+    }
+
+    /* Button */
     .stButton>button {
         border-radius: 12px;
         background: linear-gradient(135deg, #00c6ff, #0072ff);
@@ -67,19 +77,17 @@ if st.session_state.user_name is None:
         font-weight: bold;
         border: none;
         padding: 10px 20px;
+        margin-top: 10px;
     }
 
     .stButton>button:hover {
         box-shadow: 0 0 15px rgba(0, 198, 255, 0.8);
         transform: scale(1.05);
     }
-
-    input {
-        border-radius: 10px !important;
-    }
     </style>
     """, unsafe_allow_html=True)
 
+    # Title + subtitle
     st.markdown("""
     <div class="center-box">
         <div class="title">💳 Credit Risk Intelligence</div>
@@ -87,15 +95,20 @@ if st.session_state.user_name is None:
     </div>
     """, unsafe_allow_html=True)
 
-    # Center input (no scroll now)
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        name = st.text_input("Enter your name")
+    # 👇 INPUT EXACTLY BELOW TITLE
+    st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
 
-        if st.button("Enter"):
-            if name.strip() != "":
-                st.session_state.user_name = name
-                st.rerun()
+    name = st.text_input(
+        "",
+        placeholder="Enter your name"
+    )
+
+    if st.button("Enter"):
+        if name.strip() != "":
+            st.session_state.user_name = name
+            st.rerun()
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
     st.stop()
 
