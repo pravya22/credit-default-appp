@@ -12,7 +12,7 @@ st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layo
 if "user_name" not in st.session_state:
     st.session_state.user_name = None
 
-# ---------- WELCOME SCREEN (UNCHANGED) ----------
+# ---------- WELCOME SCREEN (DO NOT TOUCH) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -90,59 +90,89 @@ if st.session_state.user_name is None:
 st.markdown("""
 <style>
 
-/* REMOVE HEADER */
-header {visibility: hidden;}
-.block-container {padding-top: 0rem;}
+/* REMOVE EXTRA SPACE */
+header {visibility:hidden;}
+.block-container {padding-top:1rem;}
 
 /* BACKGROUND */
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #020617, #0f172a);
-    color: white;
+    background: radial-gradient(circle at top, #020617, #000000 100%);
+    color:white;
 }
 
 /* SIDEBAR */
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #020617, #020617);
-    padding-top:20px;
+    background: #020617;
+    padding-top:30px;
 }
 
-section[data-testid="stSidebar"] > div {
-    padding:20px;
+/* NAV TITLE */
+section[data-testid="stSidebar"] h2 {
+    color:#00c6ff;
+    text-shadow:0 0 10px rgba(0,198,255,0.6);
 }
 
 /* NAV ITEMS */
 div[role="radiogroup"] > label {
-    padding:10px;
-    border-radius:10px;
-    margin-bottom:8px;
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:10px;
     transition:0.3s;
 }
 
+/* HOVER */
 div[role="radiogroup"] > label:hover {
     background: rgba(0,198,255,0.1);
+    transform: translateX(5px);
+}
+
+/* ACTIVE */
+div[role="radiogroup"] input:checked + div {
+    background: rgba(0,198,255,0.2);
+    box-shadow:0 0 12px rgba(0,198,255,0.6);
+    border-radius:10px;
 }
 
 /* LOGOUT BUTTON */
 .stSidebar button {
-    border-radius:10px;
-    background:#111827;
+    border-radius:12px;
+    background: linear-gradient(135deg, #1f2937, #111827);
     color:white;
-    border:1px solid #333;
+    border:1px solid rgba(255,255,255,0.1);
 }
 
-/* CARD UI */
+/* HERO CARD */
+.hero {
+    text-align:center;
+    padding:30px;
+    border-radius:20px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+/* CARDS */
 .card {
     background: rgba(255,255,255,0.05);
-    padding:20px;
-    border-radius:15px;
+    padding:25px;
+    border-radius:18px;
     border:1px solid rgba(255,255,255,0.08);
     text-align:center;
     transition:0.3s;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow:0 0 20px rgba(0,198,255,0.2);
+    transform: translateY(-6px) scale(1.03);
+    box-shadow:0 0 25px rgba(0,198,255,0.25);
+}
+
+/* SECTION */
+.section {
+    margin-top:40px;
+}
+
+h1, h2, h3 {
+    text-align:center;
 }
 
 </style>
@@ -165,26 +195,20 @@ background:rgba(255,255,255,0.05); border-radius:10px;">
 </div>
 """, unsafe_allow_html=True)
 
-# ---------- HOME ----------
+# ---------- HOME (NEXT LEVEL UI) ----------
 if page == "🏠 Home":
 
-    st.markdown(f"# 👋 Welcome, {st.session_state.user_name}")
-    st.markdown("### Credit Risk Intelligence Platform")
+    # HERO
+    st.markdown(f"""
+    <div class="hero">
+        <h1>👋 Welcome, {st.session_state.user_name}</h1>
+        <p style="color:#aaa;">AI-powered platform for credit risk prediction</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.markdown('<div class="section"></div>', unsafe_allow_html=True)
 
-    # WHAT APP DOES
-    st.subheader("🚀 What this app does")
-    st.markdown("""
-- Predicts loan default risk using Machine Learning  
-- Uses XGBoost model for high accuracy  
-- Provides real-time risk classification  
-- Helps financial decision making  
-""")
-
-    st.markdown("---")
-
-    # FEATURES CARDS
+    # FEATURES
     col1, col2, col3 = st.columns(3)
 
     with col1:
@@ -196,10 +220,21 @@ if page == "🏠 Home":
     with col3:
         st.markdown('<div class="card">📈<br><b>Financial Insights</b><br>Better decisions</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.markdown('<div class="section"></div>', unsafe_allow_html=True)
+
+    # DESCRIPTION
+    st.markdown("## 🚀 What this app does")
+    st.markdown("""
+- Predicts loan default risk using Machine Learning  
+- Uses XGBoost model for high accuracy  
+- Provides real-time risk classification  
+- Helps financial decision making  
+""")
+
+    st.markdown('<div class="section"></div>', unsafe_allow_html=True)
 
     # HOW IT WORKS
-    st.subheader("🧠 How it works")
+    st.markdown("## 🧠 How it works")
     st.markdown("""
 1. Enter financial details  
 2. Model analyzes risk factors  
