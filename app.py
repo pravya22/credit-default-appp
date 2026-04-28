@@ -12,7 +12,7 @@ st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layo
 if "user_name" not in st.session_state:
     st.session_state.user_name = None
 
-# ---------- WELCOME SCREEN (UNCHANGED) ----------
+# ---------- WELCOME SCREEN (DO NOT TOUCH - FINAL) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -60,7 +60,6 @@ if st.session_state.user_name is None:
         display:block;
         margin:auto;
     }
-
     </style>
     """, unsafe_allow_html=True)
 
@@ -87,18 +86,47 @@ if st.session_state.user_name is None:
 
     st.stop()
 
-# ---------- DARK UI ----------
+# ---------- GLOBAL DARK UI ----------
 st.markdown("""
 <style>
+
 [data-testid="stAppViewContainer"] {
     background: linear-gradient(135deg, #020617, #0f172a);
     color: white;
 }
 
+/* SIDEBAR FIX */
 [data-testid="stSidebar"] {
-    background: #020617;
+    background: linear-gradient(180deg, #020617, #0f172a);
+    border-right: 1px solid rgba(255,255,255,0.08);
 }
 
+[data-testid="stSidebar"] * {
+    color: #e5e7eb !important;
+}
+
+/* Clean radio buttons */
+div[role="radiogroup"] > label {
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    transition: 0.3s;
+}
+
+div[role="radiogroup"] > label:hover {
+    background: rgba(0,255,255,0.08);
+}
+
+div[role="radiogroup"] > label[data-selected="true"] {
+    background: rgba(0,255,255,0.15);
+    box-shadow: 0 0 10px rgba(0,255,255,0.4);
+}
+
+div[role="radiogroup"] input {
+    display: none;
+}
+
+/* Cards */
 .card {
     background: rgba(255,255,255,0.05);
     padding:20px;
@@ -113,6 +141,7 @@ st.markdown("""
     box-shadow: 0 0 20px rgba(0,255,255,0.4);
 }
 
+/* Pills */
 .pill {
     display:inline-block;
     padding:8px 15px;
@@ -121,6 +150,7 @@ st.markdown("""
     background: rgba(0,255,255,0.1);
     border:1px solid rgba(0,255,255,0.3);
 }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -141,7 +171,7 @@ background:rgba(255,255,255,0.05); border-radius:10px;">
 </div>
 """, unsafe_allow_html=True)
 
-# ---------- HOME (UPDATED PREMIUM) ----------
+# ---------- HOME ----------
 if page == "🏠 Home":
 
     st.markdown(f"""
@@ -153,21 +183,19 @@ if page == "🏠 Home":
 
     st.markdown("###")
 
-    # Feature Cards
     col1, col2, col3 = st.columns(3)
 
     with col1:
         st.markdown("<div class='card'>📊<br><b>Predict Risk</b><br><small>Accurate loan default prediction</small></div>", unsafe_allow_html=True)
 
     with col2:
-        st.markdown("<div class='card'>⚡<br><b>Real-time Analysis</b><br><small>Instant risk classification</small></div>", unsafe_allow_html=True)
+        st.markdown("<div class='card'>⚡<br><b>Real-time Analysis</b><br><small>Instant classification</small></div>", unsafe_allow_html=True)
 
     with col3:
-        st.markdown("<div class='card'>🧠<br><b>ML Powered</b><br><small>Powered by XGBoost model</small></div>", unsafe_allow_html=True)
+        st.markdown("<div class='card'>🧠<br><b>ML Powered</b><br><small>XGBoost model</small></div>", unsafe_allow_html=True)
 
     st.markdown("###")
 
-    # Key Inputs
     st.markdown("<h3 style='text-align:center;'>📊 Key Inputs</h3>", unsafe_allow_html=True)
 
     st.markdown("""
@@ -181,11 +209,9 @@ if page == "🏠 Home":
 
     st.markdown("###")
 
-    # CTA Button
     c1, c2, c3 = st.columns([1,1,1])
     with c2:
         if st.button("🚀 Start Prediction"):
-            st.session_state.page = "🔍 Prediction"
             st.rerun()
 
 # ---------- DASHBOARD ----------
@@ -231,3 +257,4 @@ elif page == "🔍 Prediction":
 # ---------- FOOTER ----------
 st.markdown("---")
 st.markdown("Made with ❤️ using Machine Learning & Streamlit")
+   
