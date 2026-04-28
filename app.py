@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import pickle
-import time
 
 # Load model
 model = pickle.load(open("model.pkl", "rb"))
@@ -23,14 +22,14 @@ if st.session_state.user_name is None:
     .center-box {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;   /* 🔥 moved up */
         align-items: center;
-        height: 90vh;
+        height: 100vh;
+        padding-top: 100px;            /* 🔥 controls position */
         color: white;
         text-align: center;
     }
 
-    /* ✨ Glow Title */
     .title {
         font-size: 56px;
         font-weight: 800;
@@ -41,7 +40,6 @@ if st.session_state.user_name is None:
         margin-bottom: 10px;
     }
 
-    /* ⌨️ Typing Subtitle */
     .subtitle {
         color: #aaa;
         font-size: 18px;
@@ -62,12 +60,6 @@ if st.session_state.user_name is None:
         50% { border-color: transparent }
     }
 
-    /* Input box */
-    div[data-baseweb="input"] {
-        border-radius: 12px !important;
-    }
-
-    /* Glow button */
     .stButton>button {
         border-radius: 12px;
         background: linear-gradient(135deg, #00c6ff, #0072ff);
@@ -75,12 +67,15 @@ if st.session_state.user_name is None:
         font-weight: bold;
         border: none;
         padding: 10px 20px;
-        transition: 0.3s;
     }
 
     .stButton>button:hover {
         box-shadow: 0 0 15px rgba(0, 198, 255, 0.8);
         transform: scale(1.05);
+    }
+
+    input {
+        border-radius: 10px !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -92,7 +87,7 @@ if st.session_state.user_name is None:
     </div>
     """, unsafe_allow_html=True)
 
-    # centered input
+    # Center input (no scroll now)
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
         name = st.text_input("Enter your name")
@@ -111,28 +106,21 @@ st.markdown("""
     background: linear-gradient(135deg, #020617, #0f172a);
     color: white;
 }
-
 [data-testid="stSidebar"] {
     background: #020617;
-    border-right: 1px solid #1f2937;
 }
-
 .card {
     background: rgba(255,255,255,0.05);
     padding: 25px;
     border-radius: 15px;
     backdrop-filter: blur(10px);
-    margin-bottom: 20px;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------- SIDEBAR ----------
 st.sidebar.markdown("## 📌 Navigation")
-page = st.sidebar.radio(
-    "",
-    ["🏠 Home", "📊 Dashboard", "🔍 Prediction", "ℹ️ About"]
-)
+page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction", "ℹ️ About"])
 
 if st.sidebar.button("Logout"):
     st.session_state.user_name = None
@@ -140,44 +128,26 @@ if st.sidebar.button("Logout"):
 
 # ---------- HEADER ----------
 st.markdown(f"""
-<div style="display:flex; justify-content:space-between; align-items:center;
-padding:10px 20px; background:rgba(255,255,255,0.05); border-radius:10px;">
-    <h3>💳 Credit Risk Intelligence</h3>
-    <p>👋 Hello, {st.session_state.user_name}</p>
+<div style="display:flex; justify-content:space-between; padding:10px;
+background:rgba(255,255,255,0.05); border-radius:10px;">
+<h3>💳 Credit Risk Intelligence</h3>
+<p>👋 Hello, {st.session_state.user_name}</p>
 </div>
 """, unsafe_allow_html=True)
 
 # ---------- HOME ----------
 if page == "🏠 Home":
-
     st.title(f"👋 Hello, {st.session_state.user_name}")
-    st.markdown("### Welcome to your AI-powered dashboard")
-
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.write("""
-    - Predicts loan default risk  
-    - Uses Machine Learning (XGBoost)  
-    - Provides real-time results  
-    - Gives financial insights  
-    """)
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("### Welcome to your dashboard")
 
 # ---------- DASHBOARD ----------
 elif page == "📊 Dashboard":
-
-    st.title("📊 Dashboard")
-
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Model Accuracy", "85%")
-    col2.metric("Avg Risk Score", "0.42")
-    col3.metric("Model Type", "XGBoost")
+    st.title("Dashboard")
 
 # ---------- PREDICTION ----------
 elif page == "🔍 Prediction":
 
-    st.title("🔍 Credit Risk Prediction")
-
-    st.subheader("Enter Customer Details")
+    st.title("Credit Risk Prediction")
 
     col1, col2 = st.columns(2)
 
@@ -186,7 +156,7 @@ elif page == "🔍 Prediction":
         income = st.number_input("Monthly Income", min_value=0.0, value=5000.0)
 
     with col2:
-        late = st.number_input("Late Payments (90 days)", min_value=0, value=0)
+        late = st.number_input("Late Payments", min_value=0, value=0)
         util = st.number_input("Credit Utilization", min_value=0.0, value=0.3)
 
     input_df = pd.DataFrame([{
@@ -212,20 +182,7 @@ elif page == "🔍 Prediction":
 
 # ---------- ABOUT ----------
 elif page == "ℹ️ About":
-
     st.title("About")
-
-    st.write("""
-    This app predicts loan default risk using Machine Learning.
-
-    Model: XGBoost  
-
-    Features:
-    - Debt Ratio  
-    - Monthly Income  
-    - Late Payments  
-    - Credit Utilization  
-    """)
 
 # ---------- FOOTER ----------
 st.markdown("---")
