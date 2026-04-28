@@ -6,7 +6,8 @@ import pickle
 st.set_page_config(
     page_title="Credit Risk Intelligence",
     page_icon="💳",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 # ---------------- LOAD MODEL ----------------
@@ -21,8 +22,8 @@ model = load_model()
 if "user_name" not in st.session_state:
     st.session_state.user_name = None
 
-if "page" not in st.session_state:
-    st.session_state.page = "home"
+if "nav_page" not in st.session_state:
+    st.session_state.nav_page = "Home"
 
 # ---------------- WELCOME SCREEN ----------------
 if st.session_state.user_name is None:
@@ -35,9 +36,9 @@ if st.session_state.user_name is None:
 
     .glass {
         background: rgba(255,255,255,0.05);
-        padding: 28px;
-        border-radius: 22px;
-        backdrop-filter: blur(12px);
+        padding: 30px;
+        border-radius: 24px;
+        backdrop-filter: blur(14px);
         border: 1px solid rgba(255,255,255,0.10);
         text-align: center;
         margin-top: 90px;
@@ -88,28 +89,33 @@ if st.session_state.user_name is None:
         </div>
         """, unsafe_allow_html=True)
 
-        a, b, c = st.columns([1, 2, 1], gap="medium")
-        with b:
+        c1, c2, c3 = st.columns([1, 2, 1], gap="medium")
+        with c2:
             name = st.text_input("", placeholder="Enter your name")
 
-        d, e, f = st.columns([1, 1, 1], gap="medium")
-        with e:
+        c4, c5, c6 = st.columns([1, 1, 1], gap="medium")
+        with c5:
             if st.button("Enter"):
                 if name.strip():
                     st.session_state.user_name = name.strip()
-                    st.session_state.page = "home"
+                    st.session_state.nav_page = "Home"
                     st.rerun()
                 else:
                     st.warning("Please enter your name first.")
 
     st.stop()
 
-# ---------------- GLOBAL UI ----------------
+# ---------------- GLOBAL CSS ----------------
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
     background: radial-gradient(circle at top, #020617, #000000 100%);
     color: white;
+}
+
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #07111f 0%, #020617 100%);
+    border-right: 1px solid rgba(255,255,255,0.08);
 }
 
 .block-container {
@@ -123,7 +129,7 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 
 .hero {
     text-align: center;
-    padding: 50px 34px;
+    padding: 52px 34px;
     border-radius: 24px;
     background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
     backdrop-filter: blur(14px);
@@ -141,6 +147,25 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     font-size: 17px;
     max-width: 860px;
     margin: 0 auto;
+}
+
+.sidebar-brand {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sidebar-brand h2 {
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+
+.sidebar-brand p {
+    color: #cbd5e1;
+    font-size: 13px;
 }
 
 .stats-strip {
@@ -173,7 +198,7 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     border-radius: 18px;
     border: 1px solid rgba(255,255,255,0.08);
     text-align: left;
-    min-height: 150px;
+    min-height: 155px;
 }
 
 .metric-card h3 {
@@ -192,12 +217,17 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     padding: 26px;
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.08);
-    min-height: 240px;
+    min-height: 245px;
 }
 
 .section-card h3 {
     margin-bottom: 14px;
     font-size: 22px;
+}
+
+.section-card p {
+    color: #cbd5e1;
+    line-height: 1.7;
 }
 
 .section-card ul,
@@ -248,30 +278,59 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 .low { color: #22c55e; }
 .medium { color: #facc15; }
 .high { color: #ef4444; }
+
+.small-muted {
+    color: #94a3b8 !important;
+    font-size: 13px;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- HEADER ----------------
-h1, h2 = st.columns([6, 1], gap="medium")
-with h1:
-    st.markdown("### 💳 Credit Risk Intelligence")
-with h2:
+# ---------------- SIDEBAR ----------------
+with st.sidebar:
+    st.markdown("""
+    <div class="sidebar-brand">
+        <h2>💳 Credit Risk</h2>
+        <p>AI-powered loan default intelligence</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"**User:** {st.session_state.user_name}")
+    st.markdown("")
+
+    selected = st.radio(
+        "Navigation",
+        ["Home", "Prediction", "About"],
+        index=["Home", "Prediction", "About"].index(st.session_state.nav_page)
+    )
+    st.session_state.nav_page = selected
+
+    st.markdown("---")
+    st.markdown("### App Highlights")
+    st.markdown("- 4 financial input features")
+    st.markdown("- Real-time risk prediction")
+    st.markdown("- 3-level risk classification")
+    st.markdown("- ML-based decision support")
+
+    st.markdown("---")
     if st.button("Logout"):
         st.session_state.user_name = None
-        st.session_state.page = "home"
+        st.session_state.nav_page = "Home"
         st.rerun()
 
+# ---------------- TOP HEADER ----------------
+st.markdown("## 💳 Credit Risk Intelligence")
+
 # ---------------- HOME PAGE ----------------
-if st.session_state.page == "home":
+if st.session_state.nav_page == "Home":
 
     st.markdown(f"""
     <div class="hero">
         <h1>👋 Welcome, {st.session_state.user_name}</h1>
-        <p>Analyze applicant financial data, estimate default probability, and support smarter lending decisions with a faster and more consistent credit-risk workflow.</p>
+        <p>Analyze applicant financial data, estimate default probability, and support smarter lending decisions with a clean enterprise-style credit risk workflow.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Stats strip
     st.markdown('<div class="stats-strip">', unsafe_allow_html=True)
     s1, s2, s3 = st.columns(3, gap="medium")
     with s1:
@@ -297,73 +356,70 @@ if st.session_state.page == "home":
         """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Row 1
-    c1, c2, c3 = st.columns(3, gap="medium")
+    r1c1, r1c2, r1c3 = st.columns(3, gap="medium")
 
-    with c1:
+    with r1c1:
         st.markdown("""
         <div class="metric-card">
-            <h3>📊 Accurate Prediction</h3>
-            <p>Uses machine learning to classify risk from core financial indicators and generate a probability-based result.</p>
+            <h3>📊 Prediction Engine</h3>
+            <p>Generates a probability-based risk estimate using key borrower financial attributes.</p>
         </div>
         """, unsafe_allow_html=True)
 
-    with c2:
+    with r1c2:
         st.markdown("""
         <div class="metric-card">
-            <h3>⚡ Real-Time Analysis</h3>
-            <p>Generate instant results after entering applicant details without requiring long manual review steps.</p>
+            <h3>⚡ Fast Review</h3>
+            <p>Helps reduce initial screening effort by surfacing applicant risk quickly and consistently.</p>
         </div>
         """, unsafe_allow_html=True)
 
-    with c3:
+    with r1c3:
         st.markdown("""
         <div class="metric-card">
-            <h3>📈 Better Decision Support</h3>
-            <p>Helps identify risky profiles quickly and supports more structured financial evaluation.</p>
+            <h3>📈 Decision Support</h3>
+            <p>Supports financial evaluation with structured output for low, medium, and high-risk profiles.</p>
         </div>
         """, unsafe_allow_html=True)
 
     st.write("")
 
-    # Row 2
-    c4, c5 = st.columns(2, gap="large")
+    r2c1, r2c2 = st.columns(2, gap="large")
 
-    with c4:
+    with r2c1:
         st.markdown("""
         <div class="section-card">
             <h3>🚀 What this app does</h3>
             <ul>
                 <li>Predicts loan default risk</li>
                 <li>Uses a trained machine learning model</li>
-                <li>Generates probability-based classification</li>
-                <li>Supports faster credit evaluation</li>
+                <li>Returns a probability-based outcome</li>
+                <li>Supports credit-review workflows</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
 
-    with c5:
+    with r2c2:
         st.markdown("""
         <div class="section-card">
-            <h3>🧠 How it works</h3>
+            <h3>🧠 Workflow overview</h3>
             <ol>
-                <li>Enter applicant financial information</li>
-                <li>The model processes the input features</li>
-                <li>Risk probability is calculated</li>
-                <li>The profile is labeled as low, medium, or high risk</li>
+                <li>Enter the applicant's financial details</li>
+                <li>The model evaluates core risk signals</li>
+                <li>A probability score is generated</li>
+                <li>The profile is classified into a risk band</li>
             </ol>
         </div>
         """, unsafe_allow_html=True)
 
     st.write("")
 
-    # Row 3
-    c6, c7 = st.columns(2, gap="large")
+    r3c1, r3c2 = st.columns(2, gap="large")
 
-    with c6:
+    with r3c1:
         st.markdown("""
         <div class="section-card">
-            <h3>📌 Model Inputs</h3>
+            <h3>📌 Inputs used</h3>
             <ul>
                 <li>Debt Ratio</li>
                 <li>Monthly Income</li>
@@ -373,15 +429,15 @@ if st.session_state.page == "home":
         </div>
         """, unsafe_allow_html=True)
 
-    with c7:
+    with r3c2:
         st.markdown("""
         <div class="section-card">
-            <h3>✅ Why use this app</h3>
+            <h3>✅ Why it matters</h3>
             <ul>
-                <li>Reduces manual screening effort</li>
                 <li>Improves consistency in early review</li>
-                <li>Surfaces risk signals quickly</li>
-                <li>Supports data-driven lending decisions</li>
+                <li>Highlights red-flag profiles sooner</li>
+                <li>Supports faster screening decisions</li>
+                <li>Brings structure to credit evaluation</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
@@ -391,37 +447,37 @@ if st.session_state.page == "home":
     st.markdown("""
     <div class="note-card">
         <h3>⚠️ Important Note</h3>
-        <p>This application is a decision-support tool. Final credit approval should also consider internal business policy, additional verification, and human judgment.</p>
+        <p>This application is a decision-support tool. Final loan approval decisions should also consider internal policy, document verification, and human judgment.</p>
     </div>
     """, unsafe_allow_html=True)
 
     st.write("")
 
-    x1, x2, x3 = st.columns([2, 1, 2], gap="medium")
-    with x2:
-        if st.button("🚀 Start Prediction"):
-            st.session_state.page = "prediction"
+    a1, a2, a3 = st.columns([2, 1, 2], gap="medium")
+    with a2:
+        if st.button("🚀 Go to Prediction"):
+            st.session_state.nav_page = "Prediction"
             st.rerun()
 
     st.markdown("""
     <div class="footer-box">
-        Built with Streamlit and machine learning for credit risk decision support.
+        Built with Streamlit and machine learning for enterprise-style credit risk screening.
     </div>
     """, unsafe_allow_html=True)
 
 # ---------------- PREDICTION PAGE ----------------
-elif st.session_state.page == "prediction":
+elif st.session_state.nav_page == "Prediction":
 
-    top1, top2 = st.columns([1, 5], gap="medium")
-    with top1:
-        if st.button("← Back"):
-            st.session_state.page = "home"
-            st.rerun()
-
-    st.title("🔍 Credit Risk Prediction")
-    st.caption("Enter the applicant's financial details below to estimate loan default risk.")
+    st.markdown("""
+    <div class="hero" style="padding:30px;">
+        <h1>🔍 Credit Risk Prediction</h1>
+        <p>Enter applicant financial details to estimate the probability of default and classify the risk profile.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown('<div class="form-card">', unsafe_allow_html=True)
+    st.markdown("### Applicant Details")
+    st.caption("Use the fields below to run a real-time credit risk assessment.")
 
     p1, p2 = st.columns(2, gap="large")
 
@@ -474,7 +530,7 @@ elif st.session_state.page == "prediction":
     with b1:
         predict_btn = st.button("Predict Risk")
     with b2:
-        reset_btn = st.button("Reset")
+        reset_btn = st.button("Reset Form")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -526,6 +582,70 @@ elif st.session_state.page == "prediction":
 
     st.markdown("""
     <div class="footer-box">
-        Built with Streamlit and machine learning for credit risk decision support.
+        Prediction results should be reviewed alongside lending policy and verification checks.
+    </div>
+    """, unsafe_allow_html=True)
+
+# ---------------- ABOUT PAGE ----------------
+elif st.session_state.nav_page == "About":
+
+    st.markdown("""
+    <div class="hero" style="padding:32px;">
+        <h1>ℹ️ About This Project</h1>
+        <p>A Streamlit-based machine learning application designed to support loan default risk evaluation through simple, explainable financial input features.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    a1, a2 = st.columns(2, gap="large")
+
+    with a1:
+        st.markdown("""
+        <div class="section-card">
+            <h3>📘 Project Overview</h3>
+            <p>This application estimates credit risk using four applicant-level financial features. It is designed as a lightweight decision-support tool for academic demonstration and practical screening workflows.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with a2:
+        st.markdown("""
+        <div class="section-card">
+            <h3>🧩 Core Features</h3>
+            <ul>
+                <li>Interactive Streamlit interface</li>
+                <li>Machine learning based prediction</li>
+                <li>Probability output with risk classification</li>
+                <li>Simple financial input workflow</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+
+    b1, b2 = st.columns(2, gap="large")
+
+    with b1:
+        st.markdown("""
+        <div class="section-card">
+            <h3>📌 Input Variables</h3>
+            <ul>
+                <li>Debt Ratio</li>
+                <li>Monthly Income</li>
+                <li>Late Payments</li>
+                <li>Credit Utilization</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with b2:
+        st.markdown("""
+        <div class="section-card">
+            <h3>⚠️ Disclaimer</h3>
+            <p>This tool should not be used as the sole basis for loan approval. It is intended to support analysis and demonstrate machine learning driven credit-risk assessment.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="footer-box">
+        Built as a modern Streamlit machine learning project for credit risk intelligence.
     </div>
     """, unsafe_allow_html=True)
