@@ -21,13 +21,53 @@ if st.session_state.user_name is None:
         background: radial-gradient(circle at center, #0f172a 0%, black 80%);
     }
 
+    .center-box {
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        height:80vh;
+    }
+
+    .glass {
+        background: rgba(255,255,255,0.05);
+        padding:40px;
+        border-radius:20px;
+        backdrop-filter: blur(12px);
+        border:1px solid rgba(255,255,255,0.1);
+        text-align:center;
+        width:100%;
+    }
+
+    .title {
+        font-size:42px;
+        font-weight:800;
+        color:white;
+        text-shadow: 0 0 15px rgba(0,255,255,0.7),
+                     0 0 30px rgba(0,255,255,0.4);
+        white-space: nowrap;
+        margin-bottom:10px;
+    }
+
+    .subtitle {
+        color:#aaa;
+        font-size:16px;
+        margin-bottom:25px;
+    }
+
+    .stTextInput>div>div>input {
+        text-align:center;
+    }
+
     .stButton>button {
-        width: 100%;
-        border-radius: 10px;
+        width:150px;
+        border-radius:10px;
         background: linear-gradient(135deg, #00c6ff, #0072ff);
-        color: white;
-        border: none;
-        padding: 10px;
+        color:white;
+        border:none;
+        padding:10px;
+        display:block;
+        margin:auto;
     }
 
     .stButton>button:hover {
@@ -37,54 +77,23 @@ if st.session_state.user_name is None:
     </style>
     """, unsafe_allow_html=True)
 
-    left, center, right = st.columns([1,2,1])
+    st.markdown('<div class="center-box">', unsafe_allow_html=True)
 
-    with center:
+    st.markdown("""
+    <div class="glass">
+        <div class="title">💳 Credit Risk Intelligence</div>
+        <div class="subtitle">Welcome to AI-powered risk analysis</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-        # Glass Card
-        st.markdown("""
-        <div style='
-            background: rgba(255,255,255,0.05);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.1);
-            text-align:center;
-        '>
+    name = st.text_input("", placeholder="Enter your name")
 
-            <div style='
-                font-size:48px;
-                font-weight:800;
-                color:white;
-                text-shadow: 0 0 15px rgba(0,255,255,0.7),
-                             0 0 30px rgba(0,255,255,0.4);
-                white-space: nowrap;
-            '>
-                💳 Credit Risk Intelligence
-            </div>
+    if st.button("Enter"):
+        if name.strip():
+            st.session_state.user_name = name
+            st.rerun()
 
-            <div style='
-                color:#aaa;
-                font-size:16px;
-                margin-top:10px;
-                margin-bottom:25px;
-            '>
-                Welcome to AI-powered risk analysis
-            </div>
-
-        </div>
-        """, unsafe_allow_html=True)
-
-        # Input
-        name = st.text_input("", placeholder="Enter your name")
-
-        # Center button
-        c1, c2, c3 = st.columns([1,1,1])
-        with c2:
-            if st.button("Enter"):
-                if name.strip():
-                    st.session_state.user_name = name
-                    st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.stop()
 
@@ -154,7 +163,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # 🔒 Prediction logic unchanged
+        # 🔒 UNTOUCHED LOGIC
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
