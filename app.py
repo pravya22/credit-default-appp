@@ -35,8 +35,8 @@ if st.session_state.user_name is None:
 
     .glass {
         background: rgba(255,255,255,0.05);
-        padding: 28px;
-        border-radius: 22px;
+        padding: 32px;
+        border-radius: 24px;
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255,255,255,0.10);
         text-align: center;
@@ -55,11 +55,11 @@ if st.session_state.user_name is None:
     .subtitle {
         color: #cbd5e1;
         font-size: 15px;
-        margin-top: 10px;
-        margin-bottom: 20px;
+        margin-top: 12px;
+        margin-bottom: 22px;
     }
 
-    .stTextInput>div>div>input {
+    .stTextInput > div > div > input {
         text-align: center;
         border-radius: 10px;
         color: white !important;
@@ -68,12 +68,12 @@ if st.session_state.user_name is None:
     }
 
     .stButton > button {
-        width: 170px;
+        width: 180px;
         border-radius: 12px !important;
         background: linear-gradient(135deg, #06b6d4, #2563eb) !important;
         color: #ffffff !important;
         border: 1px solid rgba(255,255,255,0.25) !important;
-        padding: 0.70rem 1rem !important;
+        padding: 0.72rem 1rem !important;
         display: block;
         margin: auto;
         font-weight: 700 !important;
@@ -126,11 +126,12 @@ st.markdown("""
 }
 
 .block-container {
-    padding-top: 2rem;
+    padding-top: 2.8rem;
     padding-bottom: 2rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
 }
 
-/* Hide sidebar completely */
 section[data-testid="stSidebar"] {
     display: none !important;
 }
@@ -139,19 +140,40 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     color: white;
 }
 
+.header-bar {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 14px 18px;
+    margin-bottom: 28px;
+    backdrop-filter: blur(10px);
+}
+
+.header-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.2;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .hero {
     text-align: center;
-    padding: 50px 34px;
+    padding: 56px 38px;
     border-radius: 24px;
     background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
     backdrop-filter: blur(14px);
     border: 1px solid rgba(255,255,255,0.08);
-    margin-bottom: 14px;
+    margin-top: 10px;
+    margin-bottom: 22px;
 }
 
 .hero h1 {
     font-size: 44px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .hero p {
@@ -165,8 +187,8 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: 18px;
-    padding: 14px 18px;
-    margin-bottom: 18px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
 }
 
 .stat-box {
@@ -187,11 +209,11 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 
 .metric-card {
     background: rgba(255,255,255,0.05);
-    padding: 22px;
+    padding: 24px;
     border-radius: 18px;
     border: 1px solid rgba(255,255,255,0.08);
     text-align: left;
-    min-height: 155px;
+    min-height: 160px;
 }
 
 .metric-card h3 {
@@ -202,15 +224,15 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 .metric-card p {
     color: #cbd5e1;
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .section-card {
     background: rgba(255,255,255,0.05);
-    padding: 26px;
+    padding: 28px;
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.08);
-    min-height: 245px;
+    min-height: 250px;
 }
 
 .section-card h3 {
@@ -225,9 +247,9 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 
 .section-card ul,
 .section-card ol {
-    padding-left: 20px;
+    padding-left: 22px;
     color: #dbe4ee;
-    line-height: 1.8;
+    line-height: 1.9;
 }
 
 .note-card {
@@ -245,17 +267,17 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 
 .form-card {
     background: rgba(255,255,255,0.05);
-    padding: 28px;
+    padding: 30px;
     border-radius: 22px;
     border: 1px solid rgba(255,255,255,0.08);
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .result-box {
     text-align: center;
-    padding: 25px;
+    padding: 28px;
     border-radius: 20px;
-    margin-top: 20px;
+    margin-top: 22px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
 }
@@ -272,7 +294,6 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
 .medium { color: #facc15; }
 .high { color: #ef4444; }
 
-/* Visible buttons */
 .stButton > button {
     width: 100%;
     border-radius: 12px !important;
@@ -298,22 +319,49 @@ h1, h2, h3, h4, h5, h6, p, label, li, div, span {
     box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
 }
 
-/* Make number inputs more visible */
 .stNumberInput input {
     color: white !important;
+    background-color: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+}
+
+@media (max-width: 768px) {
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 1.5rem;
+    }
+
+    .header-title {
+        font-size: 22px;
+    }
+
+    .hero {
+        padding: 34px 20px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------- HEADER ----------------
-h1, h2 = st.columns([6, 1], gap="medium")
-with h1:
-    st.markdown("## 💳 Credit Risk Intelligence")
-with h2:
+st.markdown('<div class="header-bar">', unsafe_allow_html=True)
+
+col1, col2 = st.columns([7, 1], gap="large")
+
+with col1:
+    st.markdown('<div class="header-title">💳 Credit Risk Intelligence</div>', unsafe_allow_html=True)
+
+with col2:
     if st.button("Logout"):
         st.session_state.user_name = None
         st.session_state.page = "home"
         st.rerun()
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------------- HOME PAGE ----------------
 if st.session_state.page == "home":
@@ -463,7 +511,7 @@ if st.session_state.page == "home":
 elif st.session_state.page == "prediction":
 
     st.markdown("""
-    <div class="hero" style="padding:30px;">
+    <div class="hero">
         <h1>🔍 Credit Risk Prediction</h1>
         <p>Enter applicant financial details to estimate the probability of default and classify the risk profile.</p>
     </div>
