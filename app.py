@@ -23,7 +23,7 @@ if st.session_state.user_name is None:
 
     .glass {
         background: rgba(255,255,255,0.05);
-        padding:30px;
+        padding:25px;
         border-radius:20px;
         backdrop-filter: blur(12px);
         border:1px solid rgba(255,255,255,0.1);
@@ -31,19 +31,19 @@ if st.session_state.user_name is None:
     }
 
     .title {
-        font-size:48px;
-        font-weight:900;
+        font-size:40px;
+        font-weight:800;
         color:white;
-        text-shadow: 0 0 20px rgba(0,255,255,0.8),
-                     0 0 40px rgba(0,255,255,0.5);
+        text-shadow: 0 0 15px rgba(0,255,255,0.7),
+                     0 0 30px rgba(0,255,255,0.4);
         white-space: nowrap;
     }
 
     .subtitle {
         color:#aaa;
-        font-size:16px;
+        font-size:15px;
         margin-top:10px;
-        margin-bottom:25px;
+        margin-bottom:20px;
     }
 
     /* Center input text */
@@ -69,11 +69,12 @@ if st.session_state.user_name is None:
     </style>
     """, unsafe_allow_html=True)
 
-    # Perfect center alignment
-    top, center, bottom = st.columns([1,2,1])
+    # Center layout using columns
+    left, center, right = st.columns([1,2,1])
 
     with center:
 
+        # Title card
         st.markdown("""
         <div class="glass">
             <div class="title">💳 Credit Risk Intelligence</div>
@@ -81,16 +82,13 @@ if st.session_state.user_name is None:
         </div>
         """, unsafe_allow_html=True)
 
-        # tighter spacing
-        st.write("")
-
-        # centered input (smaller width)
-        c1, c2, c3 = st.columns([2,3,2])
+        # Small centered input
+        c1, c2, c3 = st.columns([1,2,1])
         with c2:
             name = st.text_input("", placeholder="Enter your name")
 
-        # button center
-        c4, c5, c6 = st.columns([3,2,3])
+        # Center button
+        c4, c5, c6 = st.columns([1,1,1])
         with c5:
             if st.button("Enter"):
                 if name.strip():
@@ -115,7 +113,7 @@ st.markdown("""
 
 # ---------- SIDEBAR ----------
 st.sidebar.markdown("## 📌 Navigation")
-page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction"])
+page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction", "ℹ️ About"])
 
 if st.sidebar.button("Logout"):
     st.session_state.user_name = None
@@ -165,6 +163,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
+        # 🔒 UNCHANGED LOGIC
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
@@ -175,6 +174,21 @@ elif page == "🔍 Prediction":
         st.progress(float(probability))
         st.metric("Default Probability", f"{probability:.2f}")
 
+# ---------- ABOUT ----------
+elif page == "ℹ️ About":
+    st.title("ℹ️ About")
+    st.write("""
+    This app predicts loan default risk using Machine Learning.
+
+    Model: XGBoost  
+
+    Inputs:
+    - Debt Ratio  
+    - Monthly Income  
+    - Late Payments  
+    - Credit Utilization  
+    """)
+
 # ---------- FOOTER ----------
 st.markdown("---")
-st.markdown("Made with ❤️ using Machine Learning & Streamlit")
+st.markdown("Made with ❤️ using Machine Learning & Streamlit") this was the app.py when my welcome page got fixed
