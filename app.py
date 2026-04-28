@@ -12,7 +12,7 @@ st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layo
 if "user_name" not in st.session_state:
     st.session_state.user_name = None
 
-# ---------- WELCOME SCREEN (UNCHANGED) ----------
+# ---------- WELCOME SCREEN (DO NOT TOUCH) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -99,48 +99,46 @@ st.markdown("""
 /* SIDEBAR */
 [data-testid="stSidebar"] {
     background: linear-gradient(180deg, #020617, #000000);
-    padding-top: 30px;
-    border-right: 1px solid rgba(0,255,255,0.1);
+    border-right: 1px solid rgba(0,255,255,0.2);
 }
 
 /* NAV TITLE */
 section[data-testid="stSidebar"] h2 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 800;
     color: #00e5ff;
     text-align: center;
     margin-bottom: 25px;
-    text-shadow: 0 0 12px rgba(0,229,255,1);
+    text-shadow: 0 0 10px #00e5ff;
 }
 
-/* RADIO */
+/* NAV ITEMS */
 div[role="radiogroup"] > label {
     display: block;
     padding: 14px;
-    margin-bottom: 10px;
-    border-radius: 12px;
-    color: #cbd5e1;
+    margin: 6px 0;
+    border-radius: 10px;
+    color: #e2e8f0;
     transition: 0.3s;
 }
 
+/* HOVER */
 div[role="radiogroup"] > label:hover {
-    background: rgba(0,229,255,0.15);
-    transform: translateX(6px);
-    color: white;
+    background: rgba(0,229,255,0.1);
+    transform: translateX(5px);
 }
 
 /* ACTIVE */
 div[role="radiogroup"] input:checked + div {
-    background: linear-gradient(135deg, rgba(0,229,255,0.3), rgba(0,114,255,0.2));
-    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(0,229,255,0.35), transparent);
+    border-left: 4px solid #00e5ff;
     color: white;
     font-weight: 600;
-    box-shadow: 0 0 10px rgba(0,229,255,0.7);
 }
 
 /* LOGOUT */
 .stSidebar button {
-    border-radius: 12px;
+    border-radius: 10px;
     background: #111827;
     color: white;
 }
@@ -164,15 +162,25 @@ background:rgba(255,255,255,0.05); border-radius:10px;">
 </div>
 """, unsafe_allow_html=True)
 
-# ---------- HOME (UPGRADED) ----------
+# ---------- HOME ----------
 if page == "🏠 Home":
 
-    st.markdown(f"""
-    <div style="text-align:center; margin-top:20px;">
-        <h1>👋 Welcome, {st.session_state.user_name}</h1>
-        <h3 style="color:#aaa;">Credit Risk Intelligence Platform</h3>
-    </div>
+    st.markdown("""
+    <div style="
+        background: rgba(255,255,255,0.04);
+        padding:30px;
+        border-radius:18px;
+        border:1px solid rgba(255,255,255,0.08);
+        backdrop-filter: blur(10px);
+    ">
     """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <h1 style="text-align:center;">👋 Welcome, {st.session_state.user_name}</h1>
+    <h3 style="text-align:center; color:#94a3b8;">Credit Risk Intelligence Platform</h3>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")
 
     st.markdown("### 🚀 What this app does")
 
@@ -180,7 +188,7 @@ if page == "🏠 Home":
 
     with col1:
         st.markdown("""
-        ✅ Predicts loan default risk  
+        ✔️ Predicts loan default risk  
         ⚡ Real-time risk analysis  
         """)
 
@@ -197,10 +205,10 @@ if page == "🏠 Home":
     f1, f2, f3 = st.columns(3)
 
     with f1:
-        st.info("📊 Accurate Prediction")
+        st.success("📊 Accurate Prediction")
 
     with f2:
-        st.info("⚡ Fast Results")
+        st.warning("⚡ Fast Results")
 
     with f3:
         st.info("💡 Smart Insights")
@@ -214,6 +222,8 @@ if page == "🏠 Home":
     2. Model analyzes risk  
     3. Get instant prediction  
     """)
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # ---------- DASHBOARD ----------
 elif page == "📊 Dashboard":
