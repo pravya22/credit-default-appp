@@ -90,7 +90,7 @@ if st.session_state.user_name is None:
 st.markdown("""
 <style>
 
-/* REMOVE EXTRA SPACE */
+/* CLEAN TOP */
 header {visibility:hidden;}
 .block-container {padding-top:1rem;}
 
@@ -102,46 +102,41 @@ header {visibility:hidden;}
 
 /* SIDEBAR */
 [data-testid="stSidebar"] {
-    background: #020617;
+    background: linear-gradient(180deg, #020617, #020617);
     padding-top:30px;
 }
 
 /* NAV TITLE */
 section[data-testid="stSidebar"] h2 {
     color:#00c6ff;
-    text-shadow:0 0 10px rgba(0,198,255,0.6);
+    font-weight:700;
+    font-size:20px;
+    text-shadow:0 0 12px rgba(0,198,255,0.9);
 }
 
 /* NAV ITEMS */
 div[role="radiogroup"] > label {
-    padding:12px;
-    border-radius:12px;
+    padding:14px;
+    border-radius:14px;
     margin-bottom:10px;
+    font-size:15px;
     transition:0.3s;
 }
 
 /* HOVER */
 div[role="radiogroup"] > label:hover {
-    background: rgba(0,198,255,0.1);
-    transform: translateX(5px);
+    background: rgba(0,198,255,0.15);
+    transform: translateX(6px);
 }
 
 /* ACTIVE */
 div[role="radiogroup"] input:checked + div {
-    background: rgba(0,198,255,0.2);
-    box-shadow:0 0 12px rgba(0,198,255,0.6);
-    border-radius:10px;
-}
-
-/* LOGOUT BUTTON */
-.stSidebar button {
+    background: rgba(0,198,255,0.25);
+    box-shadow:0 0 15px rgba(0,198,255,0.9);
     border-radius:12px;
-    background: linear-gradient(135deg, #1f2937, #111827);
-    color:white;
-    border:1px solid rgba(255,255,255,0.1);
 }
 
-/* HERO CARD */
+/* HERO */
 .hero {
     text-align:center;
     padding:30px;
@@ -151,7 +146,7 @@ div[role="radiogroup"] input:checked + div {
     border:1px solid rgba(255,255,255,0.08);
 }
 
-/* CARDS */
+/* FEATURE CARDS */
 .card {
     background: rgba(255,255,255,0.05);
     padding:25px;
@@ -163,10 +158,39 @@ div[role="radiogroup"] input:checked + div {
 
 .card:hover {
     transform: translateY(-6px) scale(1.03);
-    box-shadow:0 0 25px rgba(0,198,255,0.25);
+    box-shadow:0 0 25px rgba(0,198,255,0.3);
 }
 
-/* SECTION */
+/* GRADIENT TEXT */
+.gradient-text {
+    background: linear-gradient(90deg, #00c6ff, #7c3aed, #00c6ff);
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: glowMove 5s linear infinite;
+}
+
+@keyframes glowMove {
+    0% {background-position: 0%;}
+    100% {background-position: 200%;}
+}
+
+/* INFO CARDS */
+.info-card {
+    background: rgba(255,255,255,0.05);
+    padding:28px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    transition:0.4s;
+}
+
+.info-card:hover {
+    transform: translateY(-8px);
+    box-shadow:0 0 35px rgba(0,198,255,0.3);
+}
+
+/* SPACING */
 .section {
     margin-top:40px;
 }
@@ -179,7 +203,7 @@ h1, h2, h3 {
 """, unsafe_allow_html=True)
 
 # ---------- SIDEBAR ----------
-st.sidebar.markdown("## 📌 Navigation")
+st.sidebar.markdown("## 🚀 Navigation")
 page = st.sidebar.radio("", ["🏠 Home", "📊 Dashboard", "🔍 Prediction"])
 
 if st.sidebar.button("Logout"):
@@ -195,7 +219,7 @@ background:rgba(255,255,255,0.05); border-radius:10px;">
 </div>
 """, unsafe_allow_html=True)
 
-# ---------- HOME (NEXT LEVEL UI) ----------
+# ---------- HOME ----------
 if page == "🏠 Home":
 
     # HERO
@@ -222,24 +246,33 @@ if page == "🏠 Home":
 
     st.markdown('<div class="section"></div>', unsafe_allow_html=True)
 
-    # DESCRIPTION
-    st.markdown("## 🚀 What this app does")
-    st.markdown("""
-- Predicts loan default risk using Machine Learning  
-- Uses XGBoost model for high accuracy  
-- Provides real-time risk classification  
-- Helps financial decision making  
-""")
+    # GLASS INFO SECTION
+    col1, col2 = st.columns(2)
 
-    st.markdown('<div class="section"></div>', unsafe_allow_html=True)
+    with col1:
+        st.markdown("""
+        <div class="info-card">
+            <h2 class="gradient-text">🚀 What this app does</h2>
+            <ul>
+                <li>✅ Predicts loan default risk using Machine Learning</li>
+                <li>🎯 Uses XGBoost model for high accuracy</li>
+                <li>⚡ Provides real-time risk classification</li>
+                <li>📊 Helps financial decision making</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # HOW IT WORKS
-    st.markdown("## 🧠 How it works")
-    st.markdown("""
-1. Enter financial details  
-2. Model analyzes risk factors  
-3. Get instant risk prediction  
-""")
+    with col2:
+        st.markdown("""
+        <div class="info-card">
+            <h2 class="gradient-text">🧠 How it works</h2>
+            <ol>
+                <li>Enter financial details</li>
+                <li>Model analyzes risk factors</li>
+                <li>Get instant risk prediction</li>
+            </ol>
+        </div>
+        """, unsafe_allow_html=True)
 
 # ---------- DASHBOARD ----------
 elif page == "📊 Dashboard":
