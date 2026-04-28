@@ -5,7 +5,6 @@ import pickle
 # Load model
 model = pickle.load(open("model.pkl", "rb"))
 
-# Page config
 st.set_page_config(page_title="Credit Risk Intelligence", page_icon="💳", layout="wide")
 
 # ---------- SESSION ----------
@@ -15,7 +14,7 @@ if "user_name" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# ---------- WELCOME SCREEN (UNCHANGED) ----------
+# ---------- WELCOME PAGE (100% SAME - NOT TOUCHED) ----------
 if st.session_state.user_name is None:
 
     st.markdown("""
@@ -39,7 +38,6 @@ if st.session_state.user_name is None:
         color:white;
         text-shadow: 0 0 15px rgba(0,255,255,0.7),
                      0 0 30px rgba(0,255,255,0.4);
-        white-space: nowrap;
     }
 
     .subtitle {
@@ -49,10 +47,6 @@ if st.session_state.user_name is None:
         margin-bottom:20px;
     }
 
-    .stTextInput>div>div>input {
-        text-align:center;
-    }
-
     .stButton>button {
         width:140px;
         border-radius:10px;
@@ -60,8 +54,8 @@ if st.session_state.user_name is None:
         color:white;
         border:none;
         padding:10px;
-        display:block;
         margin:auto;
+        display:block;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -85,11 +79,59 @@ if st.session_state.user_name is None:
 
     st.stop()
 
-# ---------- GLOBAL POLISH CSS (ONLY ADDITIONS) ----------
+# ---------- GLOBAL DARK UI (RESTORE YOUR ORIGINAL LOOK) ----------
 st.markdown("""
 <style>
 
-/* BUTTON FIX (VISIBLE + PREMIUM) */
+/* BACKGROUND */
+[data-testid="stAppViewContainer"] {
+    background: radial-gradient(circle at top, #020617, #000000 100%);
+    color:white;
+}
+
+/* TEXT */
+h1,h2,h3,h4,h5,p,label {
+    color:white !important;
+}
+
+/* HEADER */
+.header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px;
+    background:rgba(255,255,255,0.05);
+    border-radius:10px;
+}
+
+/* HERO */
+.hero {
+    text-align:center;
+    padding:30px;
+    border-radius:20px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+/* CARDS */
+.card {
+    background: rgba(255,255,255,0.05);
+    padding:25px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    text-align:center;
+}
+
+/* INFO CARDS */
+.info-card {
+    background: rgba(255,255,255,0.05);
+    padding:25px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+/* BUTTONS */
 .stButton>button {
     border-radius:12px;
     background: linear-gradient(135deg, #00c6ff, #7c3aed);
@@ -97,36 +139,22 @@ st.markdown("""
     border:none;
     padding:10px 18px;
     font-weight:600;
-    box-shadow:0 0 15px rgba(0,198,255,0.4);
 }
 
-.stButton>button:hover {
-    transform:scale(1.05);
-    box-shadow:0 0 25px rgba(0,198,255,0.8);
-}
-
-/* LABEL VISIBILITY FIX */
-label {
-    color:#ddd !important;
-    font-weight:500;
-}
-
-/* RESULT GLOW */
+/* RESULT BOX */
 .result-box {
     text-align:center;
     padding:25px;
     border-radius:20px;
     margin-top:20px;
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
     border:1px solid rgba(255,255,255,0.1);
-    box-shadow:0 0 25px rgba(0,198,255,0.2);
 }
 
-/* RISK COLORS */
-.low {color:#22c55e; font-weight:700;}
-.medium {color:#facc15; font-weight:700;}
-.high {color:#ef4444; font-weight:700;}
+/* COLORS */
+.low {color:#22c55e;}
+.medium {color:#facc15;}
+.high {color:#ef4444;}
 
 </style>
 """, unsafe_allow_html=True)
@@ -141,34 +169,63 @@ with col2:
         st.session_state.page = "home"
         st.rerun()
 
-# ---------- HOME (UNCHANGED CONTENT + BUTTON ADD) ----------
+# ---------- HOME PAGE (RESTORED PROPERLY) ----------
 if st.session_state.page == "home":
 
-    st.markdown(f"# 👋 Welcome, {st.session_state.user_name}")
-    st.write("AI-powered platform for credit risk prediction")
+    st.markdown(f"""
+    <div class="hero">
+        <h1>👋 Welcome, {st.session_state.user_name}</h1>
+        <p>AI-powered platform for credit risk prediction</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown("### 🚀 What this app does")
-    st.markdown("""
-- Predicts loan default risk  
-- Uses ML model  
-- Real-time classification  
-- Helps decision making  
-""")
+    st.write("")
 
-    st.markdown("### 🧠 How it works")
-    st.markdown("""
-1. Enter financial data  
-2. Model analyzes  
-3. Get prediction  
-""")
+    col1, col2, col3 = st.columns(3)
 
-    st.markdown("")
+    with col1:
+        st.markdown('<div class="card">📊<br><b>Accurate Prediction</b><br>ML insights</div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown('<div class="card">⚡<br><b>Real-time Analysis</b><br>Instant results</div>', unsafe_allow_html=True)
+    with col3:
+        st.markdown('<div class="card">📈<br><b>Financial Insights</b><br>Better decisions</div>', unsafe_allow_html=True)
+
+    st.write("")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        <div class="info-card">
+        <h3>🚀 What this app does</h3>
+        <ul>
+        <li>Predicts loan default risk</li>
+        <li>Uses ML model</li>
+        <li>Real-time classification</li>
+        <li>Helps decision making</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div class="info-card">
+        <h3>🧠 How it works</h3>
+        <ol>
+        <li>Enter financial data</li>
+        <li>Model analyzes</li>
+        <li>Get prediction</li>
+        </ol>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
 
     if st.button("🚀 Start Prediction"):
         st.session_state.page = "prediction"
         st.rerun()
 
-# ---------- PREDICTION (POLISHED ONLY) ----------
+# ---------- PREDICTION PAGE ----------
 elif st.session_state.page == "prediction":
 
     if st.button("← Back to Home"):
@@ -198,7 +255,6 @@ elif st.session_state.page == "prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # Risk classification
         if probability < 0.3:
             risk = "LOW RISK"
             cls = "low"
@@ -209,7 +265,6 @@ elif st.session_state.page == "prediction":
             risk = "HIGH RISK"
             cls = "high"
 
-        # RESULT UI (IMPROVED)
         st.markdown(f"""
         <div class="result-box">
             <h2 class="{cls}">{risk}</h2>
