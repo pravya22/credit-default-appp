@@ -21,70 +21,65 @@ if st.session_state.user_name is None:
         background-color: black;
     }
 
-    /* CENTER EVERYTHING PERFECTLY */
-    .center-box {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -55%);
+    /* Center everything perfectly */
+    .block-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
         text-align: center;
-        color: white;
     }
 
     .title {
-        font-size: 58px;
+        font-size: 60px;
         font-weight: 800;
         color: white;
-        text-shadow: 0 0 12px rgba(0,255,255,0.7),
-                     0 0 25px rgba(0,255,255,0.5);
+        text-shadow: 0 0 15px rgba(0,255,255,0.7),
+                     0 0 30px rgba(0,255,255,0.4);
         margin-bottom: 10px;
     }
 
     .subtitle {
         color: #aaa;
         font-size: 18px;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
 
-    /* Input styling */
+    /* Input box */
     div[data-baseweb="input"] {
-        width: 280px;
+        width: 260px;
         margin: auto;
-        border-radius: 12px !important;
     }
 
     /* Button */
     .stButton>button {
-        border-radius: 12px;
+        border-radius: 10px;
         background: linear-gradient(135deg, #00c6ff, #0072ff);
         color: white;
-        font-weight: bold;
         border: none;
-        padding: 8px 18px;
+        padding: 8px 20px;
         margin-top: 10px;
     }
 
     .stButton>button:hover {
-        box-shadow: 0 0 12px rgba(0, 198, 255, 0.8);
+        box-shadow: 0 0 12px rgba(0,198,255,0.8);
         transform: scale(1.05);
     }
     </style>
     """, unsafe_allow_html=True)
 
-    # 👇 ONE PERFECT CENTER BLOCK
-    st.markdown('<div class="center-box">', unsafe_allow_html=True)
-
+    # Title + subtitle
     st.markdown('<div class="title">💳 Credit Risk Intelligence</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">Welcome to AI-powered risk analysis</div>', unsafe_allow_html=True)
 
+    # Input + button (centered)
     name = st.text_input("", placeholder="Enter your name")
 
     if st.button("Enter"):
         if name.strip() != "":
             st.session_state.user_name = name
             st.rerun()
-
-    st.markdown('</div>', unsafe_allow_html=True)
 
     st.stop()
 
@@ -161,7 +156,7 @@ elif page == "🔍 Prediction":
 
         probability = model.predict_proba(input_df)[0][1]
 
-        # ⚠️ SAME LOGIC (UNCHANGED)
+        # 🔒 YOUR ORIGINAL LOGIC (UNCHANGED)
         if probability < 0.3:
             st.success("Low Risk")
         elif probability < 0.6:
