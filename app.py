@@ -1,337 +1,704 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import pickle
 
-try:
-    import xgboost as xgb
-    from xgboost import XGBClassifier
-    XGBOOST_AVAILABLE = True
-except Exception:
-    XGBOOST_AVAILABLE = False
-
-from sklearn.model_selection import train_test_split
-from sklearn.impute import SimpleImputer
-from sklearn.metrics import accuracy_score, roc_auc_score
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-
+# ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="Credit Risk Prediction App",
+    page_title="Credit Risk Intelligence",
     page_icon="💳",
     layout="wide"
 )
 
-st.title("💳 Credit Risk Prediction using XGBoost + SHAP")
-st.caption("Interactive demo app based on your project presentation.")  # topic from slides [file:1]
+# ---------------- LOAD MODEL ----------------
+@st.cache_resource
+def load_model():
+    with open("model.pkl", "rb") as f:
+        return pickle.load(f)
 
-st.markdown("---")
+model = load_model()
 
-st.sidebar.header("Navigation")
-page = st.sidebar.radio(
-    "Go to",
-    ["Project Overview", "Upload Dataset & Train", "Manual Prediction", "Model Metrics"]
-)
+# ---------------- SESSION ----------------
+if "user_name" not in st.session_state:
+    st.session_state.user_name = None
 
-PRESENTATION_METRICS = pd.DataFrame({
-    "Model": ["Logistic Regression", "Decision Tree", "XGBoost"],
-    "Accuracy": [0.919509, 0.739784, 0.751732],
-    "AUC": [0.696496, 0.632416, 0.783202]
-})
+if "page" not in st.session_state:
+    st.session_state.page = "home"
 
-FEATURE_COLUMNS = [
-    "RevolvingUtilizationOfUnsecuredLines",
-    "age",
-    "NumberOfTime30-59DaysPastDueNotWorse",
-    "DebtRatio",
-    "MonthlyIncome",
-    "NumberOfOpenCreditLinesAndLoans",
-    "NumberOfTimes90DaysLate",
-    "NumberRealEstateLoansOrLines",
-    "NumberOfTime60-89DaysPastDueNotWorse",
-    "NumberOfDependents"
-]
+# ---------------- WELCOME SCREEN ----------------
+if st.session_state.user_name is None:
 
-TARGET_COLUMN = "SeriousDlqin2yrs"
-
-@st.cache_data
-def load_default_dataset(uploaded_file):
-    df = pd.read_csv(uploaded_file)
-    return df
-
-def preprocess_data(df):
-    df = df.copy()
-
-    unnamed_cols = [col for col in df.columns if "unnamed" in col.lower()]
-    if unnamed_cols:
-        df = df.drop(columns=unnamed_cols)
-
-    if TARGET_COLUMN not in df.columns:
-        raise ValueError(f"Target column '{TARGET_COLUMN}' not found in dataset.")
-
-    X = df.drop(columns=[TARGET_COLUMN])
-    y = df[TARGET_COLUMN]
-
-    for col in FEATURE_COLUMNS:
-        if col not in X.columns:
-            X[col] = np.nan
-
-    X = X[FEATURE_COLUMNS]
-
-    imputer = SimpleImputer(strategy="median")
-    X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=FEATURE_COLUMNS)
-
-    return X_imputed, y, imputer
-
-def train_models(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
-    )
-
-    models = {
-        "Logistic Regression": LogisticRegression(max_iter=1000),
-        "Decision Tree": DecisionTreeClassifier(random_state=42, max_depth=5)
+    st.markdown("""
+    <style>
+    .stApp {
+        background: radial-gradient(circle at center, #0f172a 0%, black 80%);
     }
 
-    if XGBOOST_AVAILABLE:
-        models["XGBoost"] = XGBClassifier(
-            n_estimators=200,
-            max_depth=4,
-            learning_rate=0.05,
-            subsample=0.9,
-            colsample_bytree=0.9,
-            eval_metric="logloss",
-            random_state=42
+    .glass {
+        background: rgba(255,255,255,0.05);
+        padding: 32px 28px;
+        border-radius: 24px;
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.10);
+        text-align: center;
+        margin-top: 90px;
+        width: 100%;
+    }
+
+    .title {
+        font-size: clamp(28px, 3vw, 38px);
+        font-weight: 800;
+        color: white;
+        text-shadow: 0 0 12px rgba(0,255,255,0.6),
+                     0 0 24px rgba(0,255,255,0.25);
+        white-space: normal;
+        line-height: 1.2;
+        word-break: break-word;
+        text-align: center;
+        max-width: 100%;
+    }
+
+    .subtitle {
+        color: #cbd5e1;
+        font-size: 15px;
+        margin-top: 12px;
+        margin-bottom: 22px;
+    }
+
+    .stTextInput > div > div > input {
+        text-align: center;
+        background-color: #f8fafc !important;
+        color: #111827 !important;
+        -webkit-text-fill-color: #111827 !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        opacity: 1 !important;
+    }
+
+    .stTextInput input::placeholder {
+        color: #6b7280 !important;
+        opacity: 1 !important;
+    }
+
+    .stButton > button {
+        width: 180px;
+        border-radius: 12px !important;
+        background: linear-gradient(135deg, #06b6d4, #2563eb) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255,255,255,0.25) !important;
+        padding: 0.72rem 1rem !important;
+        display: block;
+        margin: auto;
+        font-weight: 700 !important;
+        box-shadow: 0 0 18px rgba(37, 99, 235, 0.35);
+        transition: all 0.25s ease-in-out;
+    }
+
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #22d3ee, #3b82f6) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255,255,255,0.40) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 22px rgba(59, 130, 246, 0.50);
+    }
+
+    @media (max-width: 768px) {
+        .glass {
+            margin-top: 60px;
+            padding: 26px 18px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    left, center, right = st.columns([1, 2, 1], gap="large")
+
+    with center:
+        st.markdown("""
+        <div class="glass">
+            <div class="title">💳 Credit Risk Intelligence</div>
+            <div class="subtitle">Welcome to AI-powered risk analysis</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        c1, c2, c3 = st.columns([1, 2, 1], gap="medium")
+        with c2:
+            name = st.text_input("", placeholder="Enter your name")
+
+        c4, c5, c6 = st.columns([1, 1, 1], gap="medium")
+        with c5:
+            if st.button("Enter", type="primary"):
+                if name.strip():
+                    st.session_state.user_name = name.strip()
+                    st.session_state.page = "home"
+                    st.rerun()
+                else:
+                    st.warning("Please enter your name first.")
+
+    st.stop()
+
+# ---------------- GLOBAL UI ----------------
+st.markdown("""
+<style>
+[data-testid="stAppViewContainer"] {
+    background: radial-gradient(circle at top, #020617, #000000 100%);
+    color: white;
+}
+
+.block-container {
+    padding-top: 2.8rem;
+    padding-bottom: 2rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+}
+
+section[data-testid="stSidebar"] {
+    display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6, p, label, li, div, span {
+    color: white;
+}
+
+.header-bar {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 12px 18px;
+    margin-bottom: 24px;
+    backdrop-filter: blur(10px);
+}
+
+.header-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.2;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hero {
+    text-align: center;
+    padding: 48px 34px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-top: 8px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #cbd5e1;
+    font-size: 16px;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.hero-small {
+    text-align: center;
+    padding: 34px 26px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-top: 8px;
+    margin-bottom: 18px;
+}
+
+.hero-small h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.hero-small p {
+    color: #cbd5e1;
+    font-size: 15px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.stats-strip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 18px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    text-align: center;
+    padding: 10px 6px;
+}
+
+.stat-box h3 {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.stat-box p {
+    color: #cbd5e1;
+    font-size: 13px;
+    margin: 0;
+}
+
+.metric-card {
+    background: rgba(255,255,255,0.05);
+    padding: 24px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    text-align: left;
+    min-height: 160px;
+}
+
+.metric-card h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.metric-card p {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.section-card {
+    background: rgba(255,255,255,0.05);
+    padding: 28px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    min-height: 250px;
+}
+
+.section-card h3 {
+    margin-bottom: 14px;
+    font-size: 22px;
+}
+
+.section-card p {
+    color: #cbd5e1;
+    line-height: 1.7;
+}
+
+.section-card ul,
+.section-card ol {
+    padding-left: 22px;
+    color: #dbe4ee;
+    line-height: 1.9;
+}
+
+.note-card {
+    background: rgba(255,255,255,0.05);
+    padding: 24px 28px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-top: 8px;
+}
+
+.note-card p {
+    color: #cbd5e1;
+    line-height: 1.7;
+}
+
+.form-card {
+    background: rgba(255,255,255,0.05);
+    padding: 30px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-top: 8px;
+}
+
+.result-box {
+    text-align: center;
+    padding: 28px;
+    border-radius: 20px;
+    margin-top: 22px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer-box {
+    text-align: center;
+    padding-top: 24px;
+    padding-bottom: 10px;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.low { color: #22c55e; }
+.medium { color: #facc15; }
+.high { color: #ef4444; }
+
+.stButton > button {
+    width: 100%;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #06b6d4, #2563eb) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    padding: 0.75rem 1rem !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 18px rgba(37, 99, 235, 0.35);
+    transition: all 0.25s ease-in-out;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, #22d3ee, #3b82f6) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.40) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 22px rgba(59, 130, 246, 0.50);
+}
+
+.stButton > button:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
+}
+
+.stNumberInput > div > div > input {
+    background-color: #f8fafc !important;
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+
+.stNumberInput input::placeholder {
+    color: #6b7280 !important;
+    opacity: 1 !important;
+}
+
+.stNumberInput button {
+    color: #111827 !important;
+    opacity: 1 !important;
+}
+
+@media (max-width: 768px) {
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 1.5rem;
+    }
+
+    .header-title {
+        font-size: 22px;
+    }
+
+    .hero {
+        padding: 34px 20px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .hero-small {
+        padding: 26px 18px;
+    }
+
+    .hero-small h1 {
+        font-size: 24px;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ---------------- HEADER ----------------
+st.markdown('<div class="header-bar">', unsafe_allow_html=True)
+
+title_col, action1_col, action2_col = st.columns([6, 1, 1], gap="small")
+
+with title_col:
+    st.markdown('<div class="header-title">💳 Credit Risk Intelligence</div>', unsafe_allow_html=True)
+
+with action1_col:
+    if st.session_state.page == "prediction":
+        if st.button("← Back"):
+            st.session_state.page = "home"
+            st.rerun()
+
+with action2_col:
+    if st.button("Logout"):
+        st.session_state.user_name = None
+        st.session_state.page = "home"
+        st.rerun()
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# ---------------- HOME PAGE ----------------
+if st.session_state.page == "home":
+
+    st.markdown(f"""
+    <div class="hero">
+        <h1>👋 Welcome, {st.session_state.user_name}</h1>
+        <p>Analyze applicant financial data, estimate default probability, and support smarter lending decisions with a modern credit risk workflow.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="stats-strip">', unsafe_allow_html=True)
+    s1, s2, s3 = st.columns(3, gap="medium")
+    with s1:
+        st.markdown("""
+        <div class="stat-box">
+            <h3>4</h3>
+            <p>Core input features</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with s2:
+        st.markdown("""
+        <div class="stat-box">
+            <h3>3</h3>
+            <p>Risk levels generated</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with s3:
+        st.markdown("""
+        <div class="stat-box">
+            <h3>Real-time</h3>
+            <p>Instant prediction workflow</p>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    r1c1, r1c2, r1c3 = st.columns(3, gap="medium")
+
+    with r1c1:
+        st.markdown("""
+        <div class="metric-card">
+            <h3>📊 Prediction Engine</h3>
+            <p>Generates a probability-based risk estimate using key borrower financial attributes.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with r1c2:
+        st.markdown("""
+        <div class="metric-card">
+            <h3>⚡ Fast Review</h3>
+            <p>Helps reduce initial screening effort by surfacing applicant risk quickly and consistently.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with r1c3:
+        st.markdown("""
+        <div class="metric-card">
+            <h3>📈 Decision Support</h3>
+            <p>Supports financial evaluation with structured output for low, medium, and high-risk profiles.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+
+    r2c1, r2c2 = st.columns(2, gap="large")
+
+    with r2c1:
+        st.markdown("""
+        <div class="section-card">
+            <h3>🚀 What this app does</h3>
+            <ul>
+                <li>Predicts loan default risk</li>
+                <li>Uses a trained machine learning model</li>
+                <li>Returns a probability-based outcome</li>
+                <li>Supports credit-review workflows</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with r2c2:
+        st.markdown("""
+        <div class="section-card">
+            <h3>🧠 Workflow overview</h3>
+            <ol>
+                <li>Enter the applicant's financial details</li>
+                <li>The model evaluates core risk signals</li>
+                <li>A probability score is generated</li>
+                <li>The profile is classified into a risk band</li>
+            </ol>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+
+    r3c1, r3c2 = st.columns(2, gap="large")
+
+    with r3c1:
+        st.markdown("""
+        <div class="section-card">
+            <h3>📌 Inputs used</h3>
+            <ul>
+                <li>Debt Ratio</li>
+                <li>Monthly Income</li>
+                <li>Late Payments</li>
+                <li>Credit Utilization</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with r3c2:
+        st.markdown("""
+        <div class="section-card">
+            <h3>✅ Why it matters</h3>
+            <ul>
+                <li>Improves consistency in early review</li>
+                <li>Highlights red-flag profiles sooner</li>
+                <li>Supports faster screening decisions</li>
+                <li>Brings structure to credit evaluation</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+
+    st.markdown("""
+    <div class="note-card">
+        <h3>⚠️ Important Note</h3>
+        <p>This application is a decision-support tool. Final loan approval decisions should also consider internal policy, document verification, and human judgment.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.write("")
+
+    a1, a2, a3 = st.columns([2, 1, 2], gap="medium")
+    with a2:
+        if st.button("🚀 Start Prediction", type="primary"):
+            st.session_state.page = "prediction"
+            st.rerun()
+
+    st.markdown("""
+    <div class="footer-box">
+        Built with Streamlit and machine learning for credit risk screening.
+    </div>
+    """, unsafe_allow_html=True)
+
+# ---------------- PREDICTION PAGE ----------------
+elif st.session_state.page == "prediction":
+
+    st.markdown("""
+    <div class="hero-small">
+        <h1>🔍 Credit Risk Prediction</h1>
+        <p>Enter applicant financial details to estimate the probability of default and classify the risk profile.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="form-card">', unsafe_allow_html=True)
+    st.markdown("### Applicant Details")
+    st.caption("Use the fields below to run a real-time credit risk assessment.")
+
+    p1, p2 = st.columns(2, gap="large")
+
+    with p1:
+        debt = st.number_input(
+            "Debt Ratio",
+            min_value=0.0,
+            max_value=10.0,
+            value=0.50,
+            step=0.01,
+            format="%.2f",
+            help="Debt ratio represents total debt relative to income."
         )
 
-    trained_models = {}
-    results = []
+        income = st.number_input(
+            "Monthly Income",
+            min_value=0.0,
+            value=5000.0,
+            step=100.0,
+            format="%.2f"
+        )
 
-    for name, model in models.items():
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
+    with p2:
+        late = st.number_input(
+            "Late Payments",
+            min_value=0,
+            max_value=50,
+            value=0,
+            step=1
+        )
 
-        if hasattr(model, "predict_proba"):
-            y_prob = model.predict_proba(X_test)[:, 1]
-        else:
-            y_prob = y_pred
-
-        acc = accuracy_score(y_test, y_pred)
-        auc = roc_auc_score(y_test, y_prob)
-
-        trained_models[name] = model
-        results.append({
-            "Model": name,
-            "Accuracy": round(acc, 6),
-            "AUC": round(auc, 6)
-        })
-
-    results_df = pd.DataFrame(results).sort_values(by="AUC", ascending=False).reset_index(drop=True)
-    return trained_models, results_df, X_train, X_test, y_train, y_test
-
-def simple_risk_reasoning(input_df):
-    row = input_df.iloc[0]
-    reasons = []
-
-    if row["RevolvingUtilizationOfUnsecuredLines"] > 0.7:
-        reasons.append("High revolving utilization increases risk.")
-    if row["NumberOfTimes90DaysLate"] > 0:
-        reasons.append("History of 90+ days late payments increases risk.")
-    if row["NumberOfTime30-59DaysPastDueNotWorse"] > 0:
-        reasons.append("30–59 days past-due events increase risk.")
-    if row["NumberOfTime60-89DaysPastDueNotWorse"] > 0:
-        reasons.append("60–89 days past-due events increase risk.")
-    if row["DebtRatio"] > 0.5:
-        reasons.append("High debt ratio may signal repayment stress.")
-    if row["MonthlyIncome"] < 3000:
-        reasons.append("Lower monthly income may reduce repayment capacity.")
-    if row["age"] < 25:
-        reasons.append("Very young borrower profile may carry higher uncertainty.")
-    if row["NumberOfDependents"] > 3:
-        reasons.append("More dependents may increase financial burden.")
-
-    if not reasons:
-        reasons.append("Input profile shows relatively balanced risk indicators.")
-
-    return reasons
-
-def plot_feature_input(input_df):
-    row = input_df.iloc[0]
-    fig, ax = plt.subplots(figsize=(10, 4))
-    numeric_vals = row.values.astype(float)
-    ax.bar(FEATURE_COLUMNS, numeric_vals, color="#4F46E5")
-    ax.set_title("Input Feature Snapshot")
-    ax.set_xticklabels(FEATURE_COLUMNS, rotation=75, ha="right")
-    st.pyplot(fig)
-
-if page == "Project Overview":
-    st.subheader("Project Summary")
-    st.write("""
-    This app demonstrates a credit risk prediction workflow inspired by your presentation:
-    - Predict whether a customer may default on a loan
-    - Compare multiple ML models
-    - Use XGBoost as the final model when available
-    - Provide simple explainability for predictions
-    """)
-
-    st.subheader("Presentation-based Model Snapshot")
-    st.dataframe(PRESENTATION_METRICS, use_container_width=True)
-
-    fig, ax = plt.subplots(figsize=(8, 4))
-    ax.bar(PRESENTATION_METRICS["Model"], PRESENTATION_METRICS["AUC"], color=["#60A5FA", "#34D399", "#FBBF24"])
-    ax.set_title("AUC Comparison from Presentation")
-    ax.set_ylabel("AUC")
-    st.pyplot(fig)
-
-    st.info("According to the presentation, XGBoost had the highest AUC and was chosen as the final model.")
-
-elif page == "Upload Dataset & Train":
-    st.subheader("Upload Dataset and Train Models")
-    uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
-
-    if uploaded_file is not None:
-        try:
-            df = load_default_dataset(uploaded_file)
-            st.write("### Dataset Preview")
-            st.dataframe(df.head(), use_container_width=True)
-
-            st.write("### Dataset Shape")
-            st.write(df.shape)
-
-            X, y, imputer = preprocess_data(df)
-
-            st.write("### Processed Features")
-            st.dataframe(X.head(), use_container_width=True)
-
-            trained_models, results_df, X_train, X_test, y_train, y_test = train_models(X, y)
-
-            st.session_state["trained_models"] = trained_models
-            st.session_state["results_df"] = results_df
-            st.session_state["imputer"] = imputer
-            st.session_state["feature_columns"] = FEATURE_COLUMNS
-
-            st.success("Models trained successfully.")
-
-            st.write("### Model Results")
-            st.dataframe(results_df, use_container_width=True)
-
-            fig, ax = plt.subplots(figsize=(8, 4))
-            ax.bar(results_df["Model"], results_df["AUC"], color="#22C55E")
-            ax.set_title("Trained Model AUC Comparison")
-            ax.set_ylabel("AUC")
-            st.pyplot(fig)
-
-        except Exception as e:
-            st.error(f"Error: {e}")
-    else:
-        st.warning("Please upload the Give Me Some Credit dataset CSV to continue.")
-
-elif page == "Manual Prediction":
-    st.subheader("Manual Customer Risk Prediction")
-
-    st.write("Enter borrower details below:")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        revolving = st.number_input("Revolving Utilization", min_value=0.0, value=0.30, step=0.01)
-        age = st.number_input("Age", min_value=18, max_value=100, value=35)
-        past_30_59 = st.number_input("30-59 Days Past Due Count", min_value=0, value=0)
-        debt_ratio = st.number_input("Debt Ratio", min_value=0.0, value=0.40, step=0.01)
-        monthly_income = st.number_input("Monthly Income", min_value=0.0, value=5000.0, step=100.0)
-
-    with col2:
-        open_lines = st.number_input("Open Credit Lines and Loans", min_value=0, value=5)
-        late_90 = st.number_input("90 Days Late Count", min_value=0, value=0)
-        real_estate_loans = st.number_input("Real Estate Loans or Lines", min_value=0, value=1)
-        past_60_89 = st.number_input("60-89 Days Past Due Count", min_value=0, value=0)
-        dependents = st.number_input("Number of Dependents", min_value=0, value=1)
+        util = st.number_input(
+            "Credit Utilization",
+            min_value=0.0,
+            max_value=1.0,
+            value=0.30,
+            step=0.01,
+            format="%.2f",
+            help="Credit utilization is the proportion of used unsecured credit."
+        )
 
     input_df = pd.DataFrame([{
-        "RevolvingUtilizationOfUnsecuredLines": revolving,
-        "age": age,
-        "NumberOfTime30-59DaysPastDueNotWorse": past_30_59,
-        "DebtRatio": debt_ratio,
-        "MonthlyIncome": monthly_income,
-        "NumberOfOpenCreditLinesAndLoans": open_lines,
-        "NumberOfTimes90DaysLate": late_90,
-        "NumberRealEstateLoansOrLines": real_estate_loans,
-        "NumberOfTime60-89DaysPastDueNotWorse": past_60_89,
-        "NumberOfDependents": dependents
+        "DebtRatio": debt,
+        "MonthlyIncome": income,
+        "NumberOfTimes90DaysLate": late,
+        "RevolvingUtilizationOfUnsecuredLines": util
     }])
 
-    st.write("### Input Summary")
-    st.dataframe(input_df, use_container_width=True)
+    b1, b2, b3 = st.columns([1, 1, 4], gap="medium")
+    with b1:
+        predict_btn = st.button("Predict Risk", type="primary")
+    with b2:
+        reset_btn = st.button("Reset Form")
 
-    if st.button("Predict Risk"):
-        if "trained_models" in st.session_state and "results_df" in st.session_state:
-            results_df = st.session_state["results_df"]
-            trained_models = st.session_state["trained_models"]
-            best_model_name = results_df.iloc[0]["Model"]
-            best_model = trained_models[best_model_name]
+    st.markdown('</div>', unsafe_allow_html=True)
 
-            pred = best_model.predict(input_df)[0]
+    if reset_btn:
+        st.rerun()
 
-            if hasattr(best_model, "predict_proba"):
-                prob = best_model.predict_proba(input_df)[0][1]
-            else:
-                prob = float(pred)
-
-            st.markdown("### Prediction Result")
-            if pred == 1:
-                st.error(f"High Risk of Default | Probability: {prob:.2%}")
-            else:
-                st.success(f"Low Risk of Default | Probability: {prob:.2%}")
-
-            st.markdown("### Why this prediction?")
-            reasons = simple_risk_reasoning(input_df)
-            for r in reasons:
-                st.write(f"- {r}")
-
-            st.markdown("### Input Visualization")
-            plot_feature_input(input_df)
-
+    if predict_btn:
+        if income == 0:
+            st.error("Monthly Income cannot be zero for meaningful credit analysis.")
         else:
-            st.warning("Please train the models first from the 'Upload Dataset & Train' page.")
+            try:
+                probability = float(model.predict_proba(input_df)[0][1])
 
-elif page == "Model Metrics":
-    st.subheader("Model Performance")
+                if probability < 0.30:
+                    risk = "LOW RISK"
+                    cls = "low"
+                    msg = "Applicant appears financially stable based on the entered values."
+                elif probability < 0.60:
+                    risk = "MEDIUM RISK"
+                    cls = "medium"
+                    msg = "Applicant shows moderate risk. Additional review is recommended."
+                else:
+                    risk = "HIGH RISK"
+                    cls = "high"
+                    msg = "Applicant may have a strong chance of default. Proceed carefully."
 
-    tab1, tab2 = st.tabs(["Presentation Metrics", "Trained Metrics"])
+                st.markdown(f"""
+                <div class="result-box">
+                    <h2 class="{cls}">{risk}</h2>
+                    <h1>{probability * 100:.1f}%</h1>
+                    <p>{msg}</p>
+                </div>
+                """, unsafe_allow_html=True)
 
-    with tab1:
-        st.write("These values are taken from the presentation.")
-        st.dataframe(PRESENTATION_METRICS, use_container_width=True)
+                st.progress(probability)
 
-        fig, ax = plt.subplots(figsize=(8, 4))
-        x = np.arange(len(PRESENTATION_METRICS))
-        width = 0.35
+                if probability < 0.30:
+                    st.success("Prediction completed successfully.")
+                elif probability < 0.60:
+                    st.warning("Prediction completed: medium-risk profile detected.")
+                else:
+                    st.error("Prediction completed: high-risk profile detected.")
 
-        ax.bar(x - width/2, PRESENTATION_METRICS["Accuracy"], width, label="Accuracy", color="#3B82F6")
-        ax.bar(x + width/2, PRESENTATION_METRICS["AUC"], width, label="AUC", color="#10B981")
+                st.subheader("Input Summary")
+                st.dataframe(input_df, use_container_width=True, hide_index=True)
 
-        ax.set_xticks(x)
-        ax.set_xticklabels(PRESENTATION_METRICS["Model"], rotation=15)
-        ax.set_title("Presentation Model Comparison")
-        ax.legend()
-        st.pyplot(fig)
+            except Exception:
+                st.error("Prediction failed. Please check whether model.pkl matches these input features.")
 
-    with tab2:
-        if "results_df" in st.session_state:
-            results_df = st.session_state["results_df"]
-            st.dataframe(results_df, use_container_width=True)
-
-            fig, ax = plt.subplots(figsize=(8, 4))
-            x = np.arange(len(results_df))
-            width = 0.35
-
-            ax.bar(x - width/2, results_df["Accuracy"], width, label="Accuracy", color="#8B5CF6")
-            ax.bar(x + width/2, results_df["AUC"], width, label="AUC", color="#F59E0B")
-
-            ax.set_xticks(x)
-            ax.set_xticklabels(results_df["Model"], rotation=15)
-            ax.set_title("Trained Model Comparison")
-            ax.legend()
-            st.pyplot(fig)
-        else:
-            st.info("Train the models first to see live metrics.")
+    st.markdown("""
+    <div class="footer-box">
+        Prediction results should be reviewed alongside lending policy and verification checks.
+    </div>
+    """, unsafe_allow_html=True) 
